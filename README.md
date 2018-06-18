@@ -1,6 +1,14 @@
-# pnm
+# pnm++
 
-pnm format(pbm, pgm, ppm) IO for modern C++
+header-only, standalone pnm image reader/writer for modern C++ (after C++11).
+
+It has no dependencies except for C++ Standard Library.
+
+the interfaces are inspired by png++.
+
+## installation
+
+copy `pnm.hpp` to your favorite location. then use it.
 
 ## example
 
@@ -29,13 +37,15 @@ int main()
 }
 ```
 
-## synopsis
+## reference
 
 ### pixels
 
 `pixel` classes are aliases of `basic_pixel`.
 For the convenience, `basic_pixel<T, 3>` is specialized to have members named
 `red`, `green`, and `blue`.
+
+#### synopsis
 
 ```cpp
 template<typename T, std::size_t N>
@@ -79,6 +89,7 @@ struct basic_pixel<T, 3>
 // noexcept if T is nothrow constructible
     basic_pixel(const value_type& R, const value_type& G, const value_type& B);
     basic_pixel(value_type&&      R, value_type&&      G, value_type&&      B);
+    basic_pixel(const std::array<value_type, 3>& values);
 
     value_type red;
     value_type green;
@@ -105,6 +116,40 @@ rgb_pixel  operator"" _rgb (unsigned long long x);
 `image` provides a proxy class that enables line-by-line access to underlying
 sequence container(`std::vector`). It contains `pnm::pixel`s as a contiguous
 array for cache locality and provides `img[y][x]` access at the same time.
+
+It also supports constructor from
+`width, height, std::vector</* convertible-to-pixel */>` or
+`std::vector<std::vector</* convertible-to-pixel */>>`.
+
+The proxy class allows you to access the pixel in the form like `img[y][x]` or
+`img.at(y).at(x)`. It also allows you to loop line-by-line and pixel-by-pixel.
+
+```cpp
+pnm::image<pnm::rgb_pixel> img;
+for(const auto line : img.lines())
+{
+    for(const auto pixel : line)
+    {
+        std::cout << '(' << pixel.red << ' ' << pixel.green << ' '
+                  << pixel.blue << ')';
+    }
+}
+```
+
+And you can also substitute `line_proxy` to other `line_proxy`.
+
+```cpp
+pnm::image<pnm::rgb_pixel> img1(100, 100);
+pnm::image<pnm::rgb_pixel> img2(100, 100);
+
+// reverse img1
+for(std::size_t i=0; i<100; ++i)
+{
+    img2[i] = img1[99 - i];
+}
+```
+
+#### synopsis
 
 ```cpp
 template<typename Pixel, typename Alloc = std::allocator<Pixel>>
@@ -196,6 +241,8 @@ class image
 (binary or ascii).
 However, because `pixel_type` differs each other, you need to specify which
 format (pbm|pgm|ppm) is used.
+
+#### synopsis
 
 ```cpp
 enum class format: bool {ascii, binary};
