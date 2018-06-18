@@ -678,12 +678,12 @@ class image
     const_iterator cbegin() const noexcept {return pixels_.cbegin();}
     const_iterator cend()   const noexcept {return pixels_.cend();}
 
-    iterator       rbegin()        noexcept {return pixels_.rbegin();}
-    iterator       rend()          noexcept {return pixels_.rend();}
-    const_iterator rbegin()  const noexcept {return pixels_.rbegin();}
-    const_iterator rend()    const noexcept {return pixels_.rend();}
-    const_iterator crbegin() const noexcept {return pixels_.crbegin();}
-    const_iterator crend()   const noexcept {return pixels_.crend();}
+    reverse_iterator       rbegin()        noexcept {return pixels_.rbegin();}
+    reverse_iterator       rend()          noexcept {return pixels_.rend();}
+    const_reverse_iterator rbegin()  const noexcept {return pixels_.rbegin();}
+    const_reverse_iterator rend()    const noexcept {return pixels_.rend();}
+    const_reverse_iterator crbegin() const noexcept {return pixels_.crbegin();}
+    const_reverse_iterator crend()   const noexcept {return pixels_.crend();}
 
     line_proxy_iterator line_begin() noexcept
     {return line_proxy_iterator(pixels_, nx_, ny_, 0);}
