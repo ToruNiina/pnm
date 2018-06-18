@@ -1435,7 +1435,7 @@ void write_pbm_binary(const std::string& fname,
 
 template<typename Alloc>
 void write_pbm(const std::string& fname, const image<bit_pixel, Alloc>& img,
-               const format fmt = format::ascii)
+               const format fmt)
 {
     if(fmt == format::ascii)
     {
@@ -1500,7 +1500,7 @@ void write_pgm_binary(const std::string& fname,
 
 template<typename Alloc>
 void write_pgm(const std::string& fname, const image<gray_pixel, Alloc>& img,
-               const format fmt = format::ascii)
+               const format fmt)
 {
     if(fmt == format::ascii)
     {
@@ -1570,7 +1570,7 @@ void write_ppm_binary(const std::string& fname,
 
 template<typename Alloc>
 void write_ppm(const std::string& fname, const image<rgb_pixel, Alloc>& img,
-               const format fmt = format::ascii)
+               const format fmt)
 {
     if(fmt == format::ascii)
     {
