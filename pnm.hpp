@@ -19,6 +19,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <array>
 #include <ostream>
 #include <fstream>
 #include <sstream>
@@ -89,6 +90,10 @@ struct basic_pixel<T, 3>
     basic_pixel(value_type&& R, value_type&& G, value_type&& B)
         noexcept(std::is_nothrow_move_constructible<value_type>::value)
         : red(std::move(R)), green(std::move(G)), blue(std::move(B))
+    {}
+    basic_pixel(const std::array<value_type, 3>& values)
+        noexcept(std::is_nothrow_copy_constructible<value_type>::value)
+        : red(values[0]), green(values[1]), blue(values[2])
     {}
 
     value_type red;
