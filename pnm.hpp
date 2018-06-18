@@ -148,6 +148,7 @@ template<typename Container>
 struct line_proxy
 {
     using container_type  = Container;
+    using pixel_type      = typename container_type::value_type;
     using reference       = typename container_type::reference;
     using const_reference = typename container_type::const_reference;
     using iterator        = typename container_type::iterator;
@@ -166,9 +167,24 @@ struct line_proxy
     {
         if(this->nx_ != other.nx_)
         {
-            throw std::out_of_range("pnm::image::line_proxy::copy width(" +
-                std::to_string(this->nx_) + std::string(") and (") +
-                std::to_string(other.nx_) + std::string(") differs"));
+            throw std::out_of_range("pnm::image::line_proxy::copy this->width("+
+                std::to_string(this->nx_) + std::string(") differs from arg (")+
+                std::to_string(other.nx_) + std::string(")"));
+        }
+        for(std::size_t i=0; i<this->nx_; ++i)
+        {
+            (*this)[i] = other[i];
+        }
+        return *this;
+    }
+
+    line_proxy& operator=(const std::vector<pixel_type>& other)
+    {
+        if(this->nx_ != other.size())
+        {
+            throw std::out_of_range("pnm::image::line_proxy::copy this->width("+
+                std::to_string(this->nx_) + std::string(") differs from arg (")+
+                std::to_string(other.size()) + std::string(")"));
         }
         for(std::size_t i=0; i<this->nx_; ++i)
         {
