@@ -765,6 +765,14 @@ inline std::unique_ptr<gain_base> get_gain(const std::size_t max)
     else if(max >  255){return std::unique_ptr<reduce>  (new reduce(max));}
     else               {return std::unique_ptr<enlarge> (new enlarge(max));}
 }
+
+namespace literals
+{
+inline std::string operator"" _str(const char* s, std::size_t len)
+{
+    return std::string(s, len);
+}
+} // literals
 } // detail
 
 // --------------------------------------------------------------------------
@@ -778,17 +786,181 @@ inline std::unique_ptr<gain_base> get_gain(const std::size_t max)
 template<typename Alloc = std::allocator<bit_pixel>>
 image<bit_pixel, Alloc> read_pbm_ascii(const std::string& fname)
 {
-    throw std::runtime_error("pnm::read_pbm_ascii: currently not supported");
+    using detail::literals::operator"" _str;
+
+    std::ifstream ifs(fname);
+    if(!ifs.good())
+    {
+        throw std::runtime_error(
+                "pnm::read_pbm_ascii: file open error: "_str + fname);
+    }
+
+    {
+        char desc[2] = {'\0', '\0'};
+        ifs.read(desc, 2);
+        if(!(desc[0] == 'P' && desc[1] == '1'))
+        {
+            throw std::runtime_error("pnm::read_pbm_ascii: " + fname +
+                " is not a pbm file: magic number is "_str +
+                std::string{desc[0], desc[1]});
+        }
+    }
+
+    bool        x_read(false), y_read(false);
+    std::size_t x(0),          y(0);
+    while(!ifs.eof())
+    {
+        std::string line;
+        std::getline(ifs, line);
+        line.erase(std::find(line.begin(), line.end(), '#'), line.end());
+        if(line.empty()){continue;}
+
+        std::size_t tmp;
+        std::istringstream iss(line);
+        while(!iss.eof())
+        {
+            iss >> tmp;
+            if(iss.fail())
+            {
+                std::string dummy;
+                iss >> dummy;
+                if(!std::all_of(dummy.begin(), dummy.end(), [](const char c){
+                        return std::isspace(static_cast<int>(c));
+                    }))
+                {
+                    throw std::runtime_error("pnm::read_pbm_ascii: file " +
+                        fname + " contains invalid token: "_str + dummy);
+                }
+            }
+            else
+            {
+                if(!x_read){x = tmp; x_read = true; continue;}
+                if(!y_read){y = tmp; y_read = true; continue;}
+            }
+        }
+        if(x_read && y_read)
+        {
+            break;
+        }
+    }
+
+    image<bit_pixel, Alloc> img(x, y);
+
+    std::size_t idx=0;
+    while(!ifs.eof())
+    {
+        std::string line;
+        std::getline(ifs, line);
+        line.erase(std::find(line.begin(), line.end(), '#'), line.end());
+        if(line.empty()){continue;}
+
+        int pix;
+        std::istringstream iss(line);
+        while(!iss.eof())
+        {
+            iss >> pix;
+            if(iss.fail())
+            {
+                std::string dummy;
+                iss >> dummy;
+                if(!std::all_of(dummy.begin(), dummy.end(), [](const char c){
+                        return std::isspace(static_cast<int>(c));
+                    }))
+                {
+                    throw std::runtime_error("pnm::read_pbm_ascii: "
+                        "file contains invalid token: " + dummy);
+                }
+            }
+            else
+            {
+                if(idx >= x * y)
+                {
+                    throw std::runtime_error("pnm::read_pbm_ascii: file "  +
+                        fname + " contains too many pixels: "_str +
+                        std::to_string(idx) + " pixels for "_str  +
+                        std::to_string(x)   + "x"_str             +
+                        std::to_string(y)   + " image"_str);
+                }
+                img.raw_access(idx++) = bit_pixel(pix != 0);
+            }
+        }
+    }
+    return img;
 }
 template<typename Alloc = std::allocator<bit_pixel>>
 image<bit_pixel, Alloc> read_pbm_binary(const std::string& fname)
 {
-    throw std::runtime_error("pnm::read_pbm_binary: currently not supported");
+    using detail::literals::operator"" _str;
+    std::ifstream ifs(fname);
+    if(!ifs.good())
+    {
+        throw std::runtime_error(
+                "pnm::read_pbm_binary: file open error: " + fname);
+    }
+
+    {
+        std::string desc;
+        std::getline(ifs, desc);
+        if(desc != "P4")
+        {
+            throw std::runtime_error("pnm::read_pbm_binary: " + fname +
+                " is not a binary pbm file: magic number is "_str + desc);
+        }
+    }
+
+    std::size_t x(0), y(0);
+    {
+        std::string line;
+        std::getline(ifs, line);
+        std::istringstream iss(line);
+        iss >> x >> y;
+        if(iss.fail())
+        {
+            throw std::runtime_error("pnm::read_pbm_binary: "
+                "couldn't read file size: " + line + " from "_str + fname);
+        }
+    }
+    image<bit_pixel, Alloc> img(x, y);
+
+    const std::size_t quot = x >> 3u;
+    const std::size_t rem  = x &  7u;
+
+    for(std::size_t j=0; j<y; ++j)
+    {
+        for(std::size_t i=0; i<quot; ++i)
+        {
+            std::uint8_t v(0);
+            ifs.read(reinterpret_cast<char*>(&v), 1);
+            img(i*8 + 0, j) = bit_pixel((v & 0x80) == 0x80);
+            img(i*8 + 1, j) = bit_pixel((v & 0x40) == 0x40);
+            img(i*8 + 2, j) = bit_pixel((v & 0x20) == 0x20);
+            img(i*8 + 3, j) = bit_pixel((v & 0x10) == 0x10);
+            img(i*8 + 4, j) = bit_pixel((v & 0x08) == 0x08);
+            img(i*8 + 5, j) = bit_pixel((v & 0x04) == 0x04);
+            img(i*8 + 6, j) = bit_pixel((v & 0x02) == 0x02);
+            img(i*8 + 7, j) = bit_pixel((v & 0x01) == 0x01);
+        }
+        std::uint8_t v(0);
+        ifs.read(reinterpret_cast<char*>(&v), 1);
+        switch(rem)
+        {
+            case 7: img(quot*8+7,j)=bit_pixel((v&0x02)==0x02); //[[fallthrough]]
+            case 6: img(quot*8+6,j)=bit_pixel((v&0x04)==0x04); //[[fallthrough]]
+            case 5: img(quot*8+5,j)=bit_pixel((v&0x08)==0x08); //[[fallthrough]]
+            case 4: img(quot*8+4,j)=bit_pixel((v&0x10)==0x10); //[[fallthrough]]
+            case 3: img(quot*8+3,j)=bit_pixel((v&0x20)==0x20); //[[fallthrough]]
+            case 2: img(quot*8+2,j)=bit_pixel((v&0x40)==0x40); //[[fallthrough]]
+            case 1: img(quot*8+1,j)=bit_pixel((v&0x80)==0x80); //[[fallthrough]]
+            default: break;
+        }
+    }
+    return img;
 }
 
 template<typename Alloc = std::allocator<bit_pixel>>
 image<bit_pixel, Alloc> read_pbm(const std::string& fname)
 {
+    using detail::literals::operator"" _str;
     char descripter[2];
     {
         std::ifstream ifs(fname, std::ios::binary);
@@ -810,53 +982,22 @@ image<bit_pixel, Alloc> read_pbm(const std::string& fname)
 template<typename Alloc = std::allocator<gray_pixel>>
 image<gray_pixel, Alloc> read_pgm_ascii(const std::string& fname)
 {
-    throw std::runtime_error("pnm::read_pgm_ascii: currently not supported");
-}
-template<typename Alloc = std::allocator<gray_pixel>>
-image<gray_pixel, Alloc> read_pgm_binary(const std::string& fname)
-{
-    throw std::runtime_error("pnm::read_pgm_binary: currently not supported");
-}
-
-template<typename Alloc = std::allocator<gray_pixel>>
-image<gray_pixel, Alloc> read_pgm(const std::string& fname)
-{
-    char descripter[2];
-    {
-        std::ifstream ifs(fname, std::ios::binary);
-        ifs.read(descripter, 2);
-    }
-
-    if(descripter[0] == 'P' && descripter[1] == '2')
-    {
-        return read_pgm_ascii(fname);
-    }
-    else if(descripter[0] == 'P' && descripter[1] == '5')
-    {
-        return read_pgm_binary(fname);
-    }
-    throw std::runtime_error("pnm::read_pgm: not a pgm file: magic number is " +
-                             std::string{descripter[0], descripter[1]});
-}
-
-template<typename Alloc = std::allocator<rgb_pixel>>
-image<rgb_pixel, Alloc> read_ppm_ascii(const std::string& fname)
-{
+    using detail::literals::operator"" _str;
     std::ifstream ifs(fname);
     if(!ifs.good())
     {
         throw std::runtime_error(
-                "pnm::read_ppm_ascii: file open error: " + fname);
+                "pnm::read_pgm_ascii: file open error: " + fname);
     }
 
     {
         char desc[2] = {'\0', '\0'};
         ifs.read(desc, 2);
-        if(!(desc[0] == 'P' && desc[1] == '3'))
+        if(!(desc[0] == 'P' && desc[1] == '2'))
         {
-            throw std::runtime_error("pnm::read_ppm_ascii: "
-                    "not an ascii ppm file: magic number is " +
-                    std::string{desc[0], desc[1]});
+            throw std::runtime_error("pnm::read_pgm_ascii: " + fname +
+                "not a pgm file: magic number is "_str +
+                std::string{desc[0], desc[1]});
         }
     }
 
@@ -882,8 +1023,194 @@ image<rgb_pixel, Alloc> read_ppm_ascii(const std::string& fname)
                         return std::isspace(static_cast<int>(c));
                     }))
                 {
-                    throw std::runtime_error("pnm::read_ppm_ascii: "
-                        "file contains invalid token: " + dummy);
+                    throw std::runtime_error("pnm::read_pgm_ascii: file " +
+                        fname + " contains invalid token: "_str  + dummy);
+                }
+            }
+            else
+            {
+                if(  !x_read){  x = tmp;   x_read = true; continue;}
+                if(  !y_read){  y = tmp;   y_read = true; continue;}
+                if(!max_read){max = tmp; max_read = true; continue;}
+            }
+        }
+        if(x_read && y_read && max_read)
+        {
+            break;
+        }
+    }
+
+    image<gray_pixel, Alloc> img(x, y);
+    const auto gain = detail::get_gain(max);
+
+    std::size_t idx=0;
+    while(!ifs.eof())
+    {
+        std::string line;
+        std::getline(ifs, line);
+        line.erase(std::find(line.begin(), line.end(), '#'), line.end());
+        if(line.empty()){continue;}
+
+        std::size_t pix;
+        std::istringstream iss(line);
+        while(!iss.eof())
+        {
+            iss >> pix;
+            if(iss.fail())
+            {
+                std::string dummy;
+                iss >> dummy;
+                if(!std::all_of(dummy.begin(), dummy.end(), [](const char c){
+                        return std::isspace(static_cast<int>(c));
+                    }))
+                {
+                    throw std::runtime_error("pnm::read_pgm_ascii: file " +
+                        fname + " contains invalid token: "_str  + dummy);
+                }
+            }
+            else
+            {
+                if(idx >= x * y)
+                {
+                    throw std::runtime_error("pnm::read_pgm_ascii: file "  +
+                        fname + "contains too many pixels: "_str  +
+                        std::to_string(idx) + " pixels for "_str  +
+                        std::to_string(x)   + "x"_str             +
+                        std::to_string(y)   + " image"_str);
+                }
+                img.raw_access(idx++) = gray_pixel(gain->invoke(pix));
+            }
+        }
+    }
+    return img;
+}
+
+template<typename Alloc = std::allocator<gray_pixel>>
+image<gray_pixel, Alloc> read_pgm_binary(const std::string& fname)
+{
+    using detail::literals::operator"" _str;
+    std::ifstream ifs(fname);
+    if(!ifs.good())
+    {
+        throw std::runtime_error(
+                "pnm::read_pgm_binary: file open error: " + fname);
+    }
+
+    {
+        std::string desc;
+        std::getline(ifs, desc);
+        if(desc != "P5")
+        {
+            throw std::runtime_error("pnm::read_pgm_binary: " + fname +
+                " is not a binary pgm file: magic number is "_str + desc);
+        }
+    }
+
+    std::size_t x(0), y(0), max(0);
+    {
+        std::string line;
+        std::getline(ifs, line);
+        std::istringstream iss(line);
+        iss >> x >> y;
+        if(iss.fail())
+        {
+            throw std::runtime_error("pnm::read_pgm_binary: "
+                "couldn't read file size: " + line + " from "_str + fname);
+        }
+    }
+    {
+        std::string line;
+        std::getline(ifs, line);
+        std::istringstream iss(line);
+        iss >> max;
+        if(iss.fail())
+        {
+            throw std::runtime_error("pnm::read_pgm_binary: "
+                "couldn't read max value: " + line + " from "_str + fname);
+        }
+    }
+
+    image<gray_pixel, Alloc> img(x, y);
+    const auto gain = detail::get_gain(max);
+
+    for(std::size_t i=0; i<img.size(); ++i)
+    {
+        std::uint8_t v(0);
+        ifs.read(reinterpret_cast<char*>(&v), 1);
+        img.raw_access(i) = gray_pixel(gain->invoke(v));
+    }
+    return img;
+}
+
+template<typename Alloc = std::allocator<gray_pixel>>
+image<gray_pixel, Alloc> read_pgm(const std::string& fname)
+{
+    using detail::literals::operator"" _str;
+    char descripter[2];
+    {
+        std::ifstream ifs(fname, std::ios::binary);
+        ifs.read(descripter, 2);
+    }
+
+    if(descripter[0] == 'P' && descripter[1] == '2')
+    {
+        return read_pgm_ascii(fname);
+    }
+    else if(descripter[0] == 'P' && descripter[1] == '5')
+    {
+        return read_pgm_binary(fname);
+    }
+    throw std::runtime_error("pnm::read_pgm: " + fname +
+        " is not a pgm file: magic number is "_str +
+        std::string{descripter[0], descripter[1]});
+}
+
+template<typename Alloc = std::allocator<rgb_pixel>>
+image<rgb_pixel, Alloc> read_ppm_ascii(const std::string& fname)
+{
+    using detail::literals::operator"" _str;
+    std::ifstream ifs(fname);
+    if(!ifs.good())
+    {
+        throw std::runtime_error(
+                "pnm::read_ppm_ascii: file open error: " + fname);
+    }
+
+    {
+        char desc[2] = {'\0', '\0'};
+        ifs.read(desc, 2);
+        if(!(desc[0] == 'P' && desc[1] == '3'))
+        {
+            throw std::runtime_error("pnm::read_ppm_ascii: " + fname +
+                " is not a ppm file: magic number is "_str +
+                std::string{desc[0], desc[1]});
+        }
+    }
+
+    bool        x_read(false), y_read(false), max_read(false);
+    std::size_t x(0),          y(0),          max(0);
+    while(!ifs.eof())
+    {
+        std::string line;
+        std::getline(ifs, line);
+        line.erase(std::find(line.begin(), line.end(), '#'), line.end());
+        if(line.empty()){continue;}
+
+        std::size_t tmp;
+        std::istringstream iss(line);
+        while(!iss.eof())
+        {
+            iss >> tmp;
+            if(iss.fail())
+            {
+                std::string dummy;
+                iss >> dummy;
+                if(!std::all_of(dummy.begin(), dummy.end(), [](const char c){
+                        return std::isspace(static_cast<int>(c));
+                    }))
+                {
+                    throw std::runtime_error("pnm::read_ppm_ascii: file " +
+                        fname + " contains invalid token: "_str + dummy);
                 }
             }
             else
@@ -926,8 +1253,8 @@ image<rgb_pixel, Alloc> read_ppm_ascii(const std::string& fname)
                         return std::isspace(static_cast<int>(c));
                     }))
                 {
-                    throw std::runtime_error("pnm::read_ppm_ascii: "
-                        "file contains invalid token: " + dummy);
+                    throw std::runtime_error("pnm::read_ppm_ascii: file " +
+                        fname + " contains invalid token: "_str + dummy);
                 }
             }
             else
@@ -940,11 +1267,11 @@ image<rgb_pixel, Alloc> read_ppm_ascii(const std::string& fname)
                 B_read = false;
                 if(idx >= x * y)
                 {
-                    throw std::runtime_error("pnm::read_ppm_ascii: file "
-                        "contains too many pixels: " + std::to_string(idx) +
-                        std::string(" pixels for ") + std::to_string(x) +
-                        std::string("x")            + std::to_string(y) +
-                        std::string(" image"));
+                    throw std::runtime_error("pnm::read_ppm_ascii: file " +
+                        fname + "contains too many pixels: "_str +
+                        std::to_string(idx) + " pixels for "_str +
+                        std::to_string(x)   + "x"_str            +
+                        std::to_string(y)   + " image"_str);
                 }
                 img.raw_access(idx++) = pixel;
             }
@@ -956,6 +1283,7 @@ image<rgb_pixel, Alloc> read_ppm_ascii(const std::string& fname)
 template<typename Alloc = std::allocator<rgb_pixel>>
 image<rgb_pixel, Alloc> read_ppm_binary(const std::string& fname)
 {
+    using detail::literals::operator"" _str;
     std::ifstream ifs(fname);
     if(!ifs.good())
     {
@@ -968,8 +1296,8 @@ image<rgb_pixel, Alloc> read_ppm_binary(const std::string& fname)
         std::getline(ifs, desc);
         if(desc != "P6")
         {
-            throw std::runtime_error("pnm::read_ppm_binary: "
-                "not a binary ppm file: magic number is " + desc);
+            throw std::runtime_error("pnm::read_ppm_binary: " + fname +
+                " is not a binary ppm file: magic number is "_str + desc);
         }
     }
 
@@ -982,7 +1310,7 @@ image<rgb_pixel, Alloc> read_ppm_binary(const std::string& fname)
         if(iss.fail())
         {
             throw std::runtime_error("pnm::read_ppm_binary: "
-                "couldn't read file size: " + line);
+                "couldn't read file size: " + line + " from "_str + fname);
         }
     }
     {
@@ -993,7 +1321,7 @@ image<rgb_pixel, Alloc> read_ppm_binary(const std::string& fname)
         if(iss.fail())
         {
             throw std::runtime_error("pnm::read_ppm_binary: "
-                "couldn't read max value: " + line);
+                "couldn't read max value: " + line + " form "_str + fname);
         }
     }
 
@@ -1015,6 +1343,7 @@ image<rgb_pixel, Alloc> read_ppm_binary(const std::string& fname)
 template<typename Alloc = std::allocator<rgb_pixel>>
 image<rgb_pixel, Alloc> read_ppm(const std::string& fname)
 {
+    using detail::literals::operator"" _str;
     char descripter[2];
     {
         std::ifstream ifs(fname, std::ios::binary);
@@ -1029,8 +1358,9 @@ image<rgb_pixel, Alloc> read_ppm(const std::string& fname)
     {
         return read_ppm_binary(fname);
     }
-    throw std::runtime_error("pnm::read_ppm: not a ppm file: magic number is " +
-                             std::string{descripter[0], descripter[1]});
+    throw std::runtime_error("pnm::read_ppm: " + fname +
+            " is not a ppm file: magic number is "_str +
+            std::string{descripter[0], descripter[1]});
 }
 
 // --------------------------------------------------------------------------
@@ -1080,7 +1410,7 @@ void write_pbm_binary(const std::string& fname,
 
     const auto get_or = [](const std::size_t i, const std::size_t j,
                            const image<bit_pixel, Alloc>& im) -> bool {
-        if(i < im.x_size() && j < im.y_size()) {return im(i, j);}
+        if(i < im.x_size() && j < im.y_size()) {return im(i, j).value;}
         return false;
     };
 
@@ -1097,7 +1427,7 @@ void write_pbm_binary(const std::string& fname,
             if(get_or(i+5, j, img)){buf |= 0x04;}
             if(get_or(i+6, j, img)){buf |= 0x02;}
             if(get_or(i+7, j, img)){buf |= 0x01;}
-            img.write(reinterpret_cast<const char*>(&buf), 1);
+            ofs.write(reinterpret_cast<const char*>(&buf), 1);
         }
     }
     return ;
@@ -1180,7 +1510,8 @@ void write_pgm(const std::string& fname, const image<gray_pixel, Alloc>& img,
     {
         return write_pgm_binary(fname, img);
     }
-    throw std::runtime_error("invalid format flag (neither ascii nor binary)");
+    throw std::runtime_error("pnm::write_pgm: "
+            "invalid format flag (neither ascii nor binary)");
 }
 
 
@@ -1249,7 +1580,8 @@ void write_ppm(const std::string& fname, const image<rgb_pixel, Alloc>& img,
     {
         return write_ppm_binary(fname, img);
     }
-    throw std::runtime_error("invalid format flag (neither ascii nor binary)");
+    throw std::runtime_error("pnm::write_ppm: "
+            "invalid format flag (neither ascii nor binary)");
 }
 
 } // pnm
