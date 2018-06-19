@@ -240,6 +240,8 @@ template<typename Container> struct const_line_proxy_iterator;
 // template<typename Container> struct reverse_line_proxy_iterator;
 // template<typename Container> struct const_reverse_line_proxy_iterator;
 
+template<typename Container> struct const_line_proxy;
+
 template<typename Container>
 struct line_proxy
 {
@@ -273,7 +275,20 @@ struct line_proxy
         }
         return *this;
     }
-
+    line_proxy& operator=(const const_line_proxy<container_type>& other)
+    {
+        if(this->nx_ != other.width())
+        {
+            throw std::out_of_range("pnm::image::line_proxy::copy this->width("+
+                std::to_string(this->nx_) + std::string(") differs from arg (")+
+                std::to_string(other.width()) + std::string(")"));
+        }
+        for(std::size_t i=0; i<this->nx_; ++i)
+        {
+            (*this)[i] = other[i];
+        }
+        return *this;
+    }
     line_proxy& operator=(const std::vector<pixel_type>& other)
     {
         if(this->nx_ != other.size())
@@ -969,11 +984,12 @@ inline std::string operator"" _str(const char* s, std::size_t len)
 } // detail
 
 // --------------------------------------------------------------------------
-//                     _
-//  _ __ ___  __ _  __| |
-// | '_// _ \/ _` |/ _` |
-// | | (  __/ (_| | (_| |
-// |_|  \___|\__,_|\__,_|
+//                     _   * read_(pbm|pgm|ppm)_(ascii|binary)
+//  _ __ ___  __ _  __| |    - the most specific functions
+// | '_// _ \/ _` |/ _` |  * read_(pbm|pgm|ppm)
+// | | (  __/ (_| | (_| |    - detects ascii or binary format and read
+// |_|  \___|\__,_|\__,_|  * read
+//                           - depends on what pixel you will specify
 // --------------------------------------------------------------------------
 
 template<typename Alloc = std::allocator<bit_pixel>>
@@ -1628,11 +1644,12 @@ image<Pixel, Alloc> read(const std::string& fname)
 }
 
 // --------------------------------------------------------------------------
-//                  _ _
-//  __      __ _ __(_) |_  ___
-//  \ \ /\ / /| '_/| | __|/ _ \
-//   \ v  v / | |  | | |_(  __/
-//    \_/\_/  |_|  |_|\__|\___|
+//                  _ _          * write_(pbm|pgm|ppm)_(ascii|binary)
+//  __      __ _ __(_) |_  ___     - the most specific ones
+//  \ \ /\ / /| '_/| | __|/ _ \  * write_(pbm|pgm|ppm)
+//   \ v  v / | |  | | |_(  __/    - requires format specifier
+//    \_/\_/  |_|  |_|\__|\___|  * write()
+//                                 - format is determined by pixel type
 // --------------------------------------------------------------------------
 
 template<typename Alloc>
