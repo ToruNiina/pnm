@@ -124,6 +124,78 @@ using    rgb_pixel = basic_pixel<std::uint8_t,  3>;
 // using gray16_pixel = basic_pixel<std::uint16_t, 1>;
 // using  rgb16_pixel = basic_pixel<std::uint16_t, 3>;
 
+
+template<typename T>
+struct is_pixel : std::false_type {};
+template<typename T, std::size_t N>
+struct is_pixel<basic_pixel<T, N>> : std::true_type {};
+
+template<typename From, typename To>
+struct is_narrowing_conversion : std::false_type {};
+template<>
+struct is_narrowing_conversion<gray_pixel,/* -> */ bit_pixel>: std::true_type{};
+template<>
+struct is_narrowing_conversion< rgb_pixel,/* -> */ bit_pixel>: std::true_type{};
+template<>
+struct is_narrowing_conversion< rgb_pixel,/* -> */gray_pixel>: std::true_type{};
+
+namespace detail
+{
+
+template<typename From, typename To>
+struct convert_impl
+{
+    static_assert(!is_narrowing_conversion<From, To>::value,
+        "pnm::convert_to: narrowing conversion is not provided by default.");
+};
+
+template<>
+struct convert_impl<bit_pixel, bit_pixel>
+{
+    static inline bit_pixel invoke(bit_pixel pixel) noexcept {return pixel;}
+};
+template<>
+struct convert_impl<bit_pixel, gray_pixel>
+{
+    static inline gray_pixel invoke(bit_pixel pixel) noexcept
+    {return (pixel.value) ? gray_pixel(0) : gray_pixel(255);}
+};
+template<>
+struct convert_impl<bit_pixel, rgb_pixel>
+{
+    static inline rgb_pixel invoke(bit_pixel pixel) noexcept
+    {return (pixel.value) ? rgb_pixel(0, 0, 0) : rgb_pixel(255, 255, 255);}
+};
+template<>
+struct convert_impl<gray_pixel, gray_pixel>
+{
+    static inline gray_pixel invoke(gray_pixel pixel) noexcept {return pixel;}
+};
+template<>
+struct convert_impl<gray_pixel, rgb_pixel>
+{
+    static inline rgb_pixel invoke(gray_pixel pixel) noexcept
+    {return rgb_pixel(pixel.value, pixel.value, pixel.value);}
+};
+template<>
+struct convert_impl<rgb_pixel, rgb_pixel>
+{
+    static inline rgb_pixel invoke(rgb_pixel pixel) noexcept {return pixel;}
+};
+
+} // detail
+
+template<typename To, typename From>
+inline typename std::enable_if<is_pixel<typename std::remove_cv<
+    typename std::remove_reference<From>::type>::type>::value &&
+    is_pixel<To>::value, To>::type
+convert_to(From&& pixel)
+{
+    return detail::convert_impl<typename std::remove_cv<
+        typename std::remove_reference<From>::type>::type, To
+        >::invoke(std::forward<From>(pixel));
+}
+
 namespace literals
 {
 inline namespace pixel_literals
