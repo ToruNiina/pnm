@@ -1454,6 +1454,81 @@ image<rgb_pixel, Alloc> read_ppm(const std::string& fname)
             std::string{descripter[0], descripter[1]});
 }
 
+template<typename Alloc = std::allocator<rgb_pixel>>
+image<rgb_pixel, Alloc> read(const std::string& fname)
+{
+    using detail::literals::operator"" _str;
+    char descripter[2];
+    {
+        std::ifstream ifs(fname, std::ios::binary);
+        ifs.read(descripter, 2);
+    }
+    if(descripter[0] != 'P')
+    {
+        throw std::runtime_error("pnm::read: " + fname +
+                " is not any of pnm format: magic number is "_str +
+                std::string{descripter[0], descripter[1]});
+    }
+
+    switch(descripter[1])
+    {
+        case '1':
+        {
+            const auto orig = read_pbm_ascii(fname);
+            image<rgb_pixel, Alloc> img(orig.x_size(), orig.y_size());
+            for(std::size_t i=0; i<orig.size(); ++i)
+            {
+                img.raw_access(i) = convert_to<rgb_pixel>(orig.raw_access(i));
+            }
+            return img;
+        }
+        case '2':
+        {
+            const auto orig = read_pgm_ascii(fname);
+            image<rgb_pixel, Alloc> img(orig.x_size(), orig.y_size());
+            for(std::size_t i=0; i<orig.size(); ++i)
+            {
+                img.raw_access(i) = convert_to<rgb_pixel>(orig.raw_access(i));
+            }
+            return img;
+        }
+        case '3':
+        {
+            return read_ppm_ascii(fname);
+        }
+        case '4':
+        {
+            const auto orig = read_pbm_binary(fname);
+            image<rgb_pixel, Alloc> img(orig.x_size(), orig.y_size());
+            for(std::size_t i=0; i<orig.size(); ++i)
+            {
+                img.raw_access(i) = convert_to<rgb_pixel>(orig.raw_access(i));
+            }
+            return img;
+        }
+        case '5':
+        {
+            const auto orig = read_pgm_binary(fname);
+            image<rgb_pixel, Alloc> img(orig.x_size(), orig.y_size());
+            for(std::size_t i=0; i<orig.size(); ++i)
+            {
+                img.raw_access(i) = convert_to<rgb_pixel>(orig.raw_access(i));
+            }
+            return img;
+        }
+        case '6':
+        {
+            return read_ppm_binary(fname);
+        }
+        default:
+        {
+            throw std::runtime_error("pnm::read: " + fname +
+                " is not any of pnm format: magic number is "_str +
+                std::string{descripter[0], descripter[1]});
+        }
+    }
+}
+
 // --------------------------------------------------------------------------
 //                  _ _
 //  __      __ _ __(_) |_  ___
@@ -1673,6 +1748,25 @@ void write_ppm(const std::string& fname, const image<rgb_pixel, Alloc>& img,
     }
     throw std::runtime_error("pnm::write_ppm: "
             "invalid format flag (neither ascii nor binary)");
+}
+
+template<typename Alloc>
+inline void write(const std::string& fname, const image<bit_pixel, Alloc>& img,
+           const format fmt)
+{
+    return write_pbm(fname, img, fmt);
+}
+template<typename Alloc>
+inline void write(const std::string& fname, const image<gray_pixel, Alloc>& img,
+           const format fmt)
+{
+    return write_pgm(fname, img, fmt);
+}
+template<typename Alloc>
+inline void write(const std::string& fname, const image<rgb_pixel, Alloc>& img,
+           const format fmt)
+{
+    return write_ppm(fname, img, fmt);
 }
 
 } // pnm
