@@ -192,13 +192,21 @@ class image
 
 ### io
 
-`read_(pbm|pgm|ppm)` read a file header and automatically detects the file format
-(binary or ascii).
-However, because `pixel_type` differs each other, you need to specify which
-format (pbm|pgm|ppm) is used.
+`read()` and `read_(pbm|pgm|ppm)` functions read a file header and
+automatically detects the file format. Since `read()` function cannot know which
+format will be passed, it returns `imgae<rgb_pixel>` to enable to contain any of them.
+
+`write` function writes the image file into a specific file. You can select a
+format to write out by passing an enum value `pnm::format::ascii` or
+`pnm::format::binary`.
 
 ```cpp
 enum class format: bool {ascii, binary};
+
+template<typename Alloc = std::allocator<rgb_pixel>>
+image<rgb_pixel, Alloc> read(const std::string& fname);
+template<typename Alloc>
+void write(const std::string& fname, const image<Pixel, Alloc>& img, const format fmt);
 
 template<typename Alloc = std::allocator<bit_pixel>>
 image<bit_pixel, Alloc>  read_pbm(const std::string& fname);
@@ -225,14 +233,11 @@ image<rgb_pixel, Alloc> read_ppm_binary(const std::string& fname);
 
 
 template<typename Alloc>
-void write_pbm(const std::string& fname, const image<bit_pixel, Alloc>& img,
-               const format fmt);
+void write_pbm(const std::string& fname, const image<bit_pixel, Alloc>& img, const format fmt);
 template<typename Alloc>
-void write_pgm(const std::string& fname, const image<gray_pixel, Alloc>& img,
-               const format fmt);
+void write_pgm(const std::string& fname, const image<gray_pixel, Alloc>& img, const format fmt);
 template<typename Alloc>
-void write_ppm(const std::string& fname, const image<rgb_pixel, Alloc>& img,
-               const format fmt);
+void write_ppm(const std::string& fname, const image<rgb_pixel, Alloc>& img, const format fmt);
 
 template<typename Alloc>
 void write_pbm_ascii (const std::string& fname, const image<bit_pixel, Alloc>& img);
