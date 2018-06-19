@@ -1555,8 +1555,46 @@ image<rgb_pixel, Alloc> read_ppm(const std::string& fname)
             std::string{descripter[0], descripter[1]});
 }
 
-template<typename Alloc = std::allocator<rgb_pixel>>
-image<rgb_pixel, Alloc> read(const std::string& fname)
+namespace detail
+{
+template<typename Pixel, typename Alloc, typename FromPixel, typename FromAlloc>
+struct convert_image_impl
+{
+    static image<Pixel, Alloc> invoke(const image<FromPixel, FromAlloc>& img)
+    {
+        image<Pixel, Alloc> retval(img.x_size(), img.y_size());
+        for(std::size_t i=0; i<img.size(); ++i)
+        {
+            retval.raw_access(i) =
+                convert_impl<FromPixel, Pixel>::invoke(img.raw_access(i));
+        }
+        return retval;
+    }
+};
+// if `from` and `to` has the same type, no conversion is needed.
+template<typename Pixel, typename Alloc>
+struct convert_image_impl<Pixel, Alloc, Pixel, Alloc>
+{
+    static inline image<Pixel, Alloc>
+    invoke(const image<Pixel, Alloc>& img) noexcept {return img;}
+};
+}// detail
+
+template<typename Pixel, typename Alloc, typename FromPixel, typename FromAlloc>
+image<Pixel, Alloc> convert_image(const image<FromPixel, FromAlloc>& img)
+{
+    return detail::convert_image_impl<Pixel, Alloc, FromPixel, FromAlloc
+        >::invoke(img);
+}
+template<typename Pixel, typename Alloc, typename FromPixel, typename FromAlloc>
+image<Pixel, Alloc> convert_image(image<FromPixel, FromAlloc>&& img)
+{
+    return detail::convert_image_impl<Pixel, Alloc, FromPixel, FromAlloc
+        >::invoke(std::move(img));
+}
+
+template<typename Pixel = rgb_pixel, typename Alloc = std::allocator<Pixel>>
+image<Pixel, Alloc> read(const std::string& fname)
 {
     using detail::literals::operator"" _str;
     char descripter[2];
@@ -1573,54 +1611,12 @@ image<rgb_pixel, Alloc> read(const std::string& fname)
 
     switch(descripter[1])
     {
-        case '1':
-        {
-            const auto orig = read_pbm_ascii(fname);
-            image<rgb_pixel, Alloc> img(orig.x_size(), orig.y_size());
-            for(std::size_t i=0; i<orig.size(); ++i)
-            {
-                img.raw_access(i) = convert_to<rgb_pixel>(orig.raw_access(i));
-            }
-            return img;
-        }
-        case '2':
-        {
-            const auto orig = read_pgm_ascii(fname);
-            image<rgb_pixel, Alloc> img(orig.x_size(), orig.y_size());
-            for(std::size_t i=0; i<orig.size(); ++i)
-            {
-                img.raw_access(i) = convert_to<rgb_pixel>(orig.raw_access(i));
-            }
-            return img;
-        }
-        case '3':
-        {
-            return read_ppm_ascii(fname);
-        }
-        case '4':
-        {
-            const auto orig = read_pbm_binary(fname);
-            image<rgb_pixel, Alloc> img(orig.x_size(), orig.y_size());
-            for(std::size_t i=0; i<orig.size(); ++i)
-            {
-                img.raw_access(i) = convert_to<rgb_pixel>(orig.raw_access(i));
-            }
-            return img;
-        }
-        case '5':
-        {
-            const auto orig = read_pgm_binary(fname);
-            image<rgb_pixel, Alloc> img(orig.x_size(), orig.y_size());
-            for(std::size_t i=0; i<orig.size(); ++i)
-            {
-                img.raw_access(i) = convert_to<rgb_pixel>(orig.raw_access(i));
-            }
-            return img;
-        }
-        case '6':
-        {
-            return read_ppm_binary(fname);
-        }
+        case '1': {return convert_image<Pixel, Alloc>(read_pbm_ascii (fname));}
+        case '2': {return convert_image<Pixel, Alloc>(read_pgm_ascii (fname));}
+        case '3': {return convert_image<Pixel, Alloc>(read_ppm_ascii (fname));}
+        case '4': {return convert_image<Pixel, Alloc>(read_pbm_binary(fname));}
+        case '5': {return convert_image<Pixel, Alloc>(read_pgm_binary(fname));}
+        case '6': {return convert_image<Pixel, Alloc>(read_ppm_binary(fname));}
         default:
         {
             throw std::runtime_error("pnm::read: " + fname +
