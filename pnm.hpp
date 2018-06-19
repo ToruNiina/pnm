@@ -38,6 +38,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <array>
 #include <ostream>
 #include <fstream>
 #include <sstream>
@@ -108,6 +109,10 @@ struct basic_pixel<T, 3>
     basic_pixel(value_type&& R, value_type&& G, value_type&& B)
         noexcept(std::is_nothrow_move_constructible<value_type>::value)
         : red(std::move(R)), green(std::move(G)), blue(std::move(B))
+    {}
+    basic_pixel(const std::array<value_type, 3>& values)
+        noexcept(std::is_nothrow_copy_constructible<value_type>::value)
+        : red(values[0]), green(values[1]), blue(values[2])
     {}
 
     value_type red;
@@ -239,6 +244,7 @@ template<typename Container>
 struct line_proxy
 {
     using container_type  = Container;
+    using pixel_type      = typename container_type::value_type;
     using reference       = typename container_type::reference;
     using const_reference = typename container_type::const_reference;
     using iterator        = typename container_type::iterator;
@@ -257,9 +263,24 @@ struct line_proxy
     {
         if(this->nx_ != other.nx_)
         {
-            throw std::out_of_range("pnm::image::line_proxy::copy width(" +
-                std::to_string(this->nx_) + std::string(") and (") +
-                std::to_string(other.nx_) + std::string(") differs"));
+            throw std::out_of_range("pnm::image::line_proxy::copy this->width("+
+                std::to_string(this->nx_) + std::string(") differs from arg (")+
+                std::to_string(other.nx_) + std::string(")"));
+        }
+        for(std::size_t i=0; i<this->nx_; ++i)
+        {
+            (*this)[i] = other[i];
+        }
+        return *this;
+    }
+
+    line_proxy& operator=(const std::vector<pixel_type>& other)
+    {
+        if(this->nx_ != other.size())
+        {
+            throw std::out_of_range("pnm::image::line_proxy::copy this->width("+
+                std::to_string(this->nx_) + std::string(") differs from arg (")+
+                std::to_string(other.size()) + std::string(")"));
         }
         for(std::size_t i=0; i<this->nx_; ++i)
         {
@@ -700,6 +721,87 @@ class image
     image(const std::size_t width, const std::size_t height)
         : nx_(width), ny_(height), pixels_(width * height)
     {}
+
+    image(const std::size_t width, const std::size_t height,
+          const pixel_type& pix)
+        : nx_(width), ny_(height), pixels_(width * height, pix)
+    {}
+
+    template<typename T>
+    image(const std::size_t width, const std::size_t height,
+          const std::vector<T>& values)
+        : nx_(width), ny_(height), pixels_(width * height)
+    {
+        if(values.size() != pixels_.size())
+        {
+            throw std::out_of_range("pnm::image::image this->size ("+
+                std::to_string(this->pixels_.size()) +
+                ") differs from argument ("_str + std::to_string(values.size())+
+                ")"_str);
+        }
+        std::transform(values.begin(), values.end(), this->pixels_.begin(),
+                       [](const T& v){return pixel_type(v);});
+    }
+
+    template<typename T>
+    image(const std::vector<std::vector<T>>& values)
+    {
+        if(values.empty() || values.front().empty())
+        {
+            this->nx_ = 0;
+            this->ny_ = 0;
+        }
+        else
+        {
+            this->nx_ = values.front().size();
+            this->ny_ = values.size();
+            this->pixels_.resize(this->nx_ * this->ny_);
+
+            for(std::size_t j=0; j<this->ny_; ++j)
+            {
+                const auto& line = values.at(j);
+                if(line.size() != this->nx_)
+                {
+                    throw std::out_of_range("pnm::image::image width of the image (" +
+                       std::to_string(this->nx_) + ") differs for each line");
+                }
+                for(std::size_t i=0; i<this->nx_; ++i)
+                {
+                    (*this)(i, j) = pixel_type(line[i]);
+                }
+            }
+        }
+    }
+
+    template<typename T>
+    image& operator=(const std::vector<std::vector<T>>& values)
+    {
+        this->pixels_.clear();
+        if(values.empty() || values.front().empty())
+        {
+            this->nx_ = 0;
+            this->ny_ = 0;
+            return *this;
+        }
+        this->nx_ = values.front().size();
+        this->ny_ = values.size();
+        this->pixels_.resize(this->nx_ * this->ny_);
+
+        for(std::size_t j=0; j<this->ny_; ++j)
+        {
+            const auto& line = values.at(j);
+            if(line.size() != this->nx_)
+            {
+                throw std::out_of_range("pnm::image::image width of the image (" +
+                   std::to_string(this->nx_) + ") differs for each line");
+            }
+            for(std::size_t i=0; i<this->nx_; ++i)
+            {
+                (*this)(i, j) = pixel_type(line[i]);
+            }
+        }
+        return *this;
+    }
 
     line_proxy operator[](const std::size_t i) noexcept
     {
