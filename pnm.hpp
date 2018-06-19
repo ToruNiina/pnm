@@ -40,6 +40,7 @@
 #include <vector>
 #include <array>
 #include <ostream>
+#include <iomanip>
 #include <fstream>
 #include <sstream>
 #include <cstdint>
@@ -1651,7 +1652,8 @@ void write_pbm_ascii(const std::string& fname,
     {
         for(std::size_t i=0; i<img.x_size(); ++i)
         {
-            ofs << (img(i, j).value ? '1' : '0') << ' ';
+            ofs << (img(i, j).value ? '1' : '0');
+            if(i+1 != img.x_size()){ofs << ' ';}
         }
         ofs << '\n';
     }
@@ -1729,7 +1731,8 @@ void write_pgm_ascii(const std::string& fname,
     {
         for(std::size_t i=0; i<img.x_size(); ++i)
         {
-            ofs << static_cast<int>(img(i, j).value) << ' ';
+            ofs << std::setw(3) << static_cast<int>(img(i, j).value);
+            if(i+1 != img.x_size()){ofs << ' ';}
         }
         ofs << '\n';
     }
@@ -1796,9 +1799,10 @@ void write_ppm_ascii(const std::string& fname,
         for(std::size_t i=0; i<img.x_size(); ++i)
         {
             const auto& pixel = img(i, j);
-            ofs << static_cast<int>(pixel.red)   << ' '
-                << static_cast<int>(pixel.green) << ' '
-                << static_cast<int>(pixel.blue)  << ' ';
+            ofs << std::setw(3) << static_cast<int>(pixel.red)   << ' '
+                << std::setw(3) << static_cast<int>(pixel.green) << ' '
+                << std::setw(3) << static_cast<int>(pixel.blue);
+            if(i+1 != img.x_size()){ofs << ' ';}
         }
         ofs << '\n';
     }
