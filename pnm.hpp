@@ -187,7 +187,6 @@ struct convert_impl<rgb_pixel, rgb_pixel>
 {
     static inline rgb_pixel invoke(rgb_pixel pixel) noexcept {return pixel;}
 };
-
 } // detail
 
 template<typename To, typename From>
@@ -734,10 +733,10 @@ class image
     {
         if(values.size() != pixels_.size())
         {
-            throw std::out_of_range("pnm::image::image this->size ("+
+            throw std::out_of_range("pnm::image::image this->size (" +
                 std::to_string(this->pixels_.size()) +
-                ") differs from argument ("_str + std::to_string(values.size())+
-                ")"_str);
+                std::string(") differs from argument (") +
+                std::to_string(values.size()) + std::string(")"));
         }
         std::transform(values.begin(), values.end(), this->pixels_.begin(),
                        [](const T& v){return pixel_type(v);});
