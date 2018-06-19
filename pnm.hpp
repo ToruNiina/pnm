@@ -1725,7 +1725,7 @@ void write_pgm_ascii(const std::string& fname,
                 "pnm::write_pgm_ascii: file open error: " + fname);
     }
 
-    ofs << "P2\n" << img.x_size() << ' ' << img.y_size() << "\n256\n";
+    ofs << "P2\n" << img.x_size() << ' ' << img.y_size() << "\n255\n";
 
     for(std::size_t j=0; j<img.y_size(); ++j)
     {
@@ -1750,7 +1750,7 @@ void write_pgm_binary(const std::string& fname,
                 "pnm::write_pgm_ascii: file open error: " + fname);
     }
 
-    ofs << "P5\n" << img.x_size() << ' ' << img.y_size() << "\n256\n";
+    ofs << "P5\n" << img.x_size() << ' ' << img.y_size() << "\n255\n";
 
     for(std::size_t j=0; j<img.y_size(); ++j)
     {
