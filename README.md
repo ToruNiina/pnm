@@ -238,8 +238,12 @@ class image
 ### io
 
 `read()` and `read_(pbm|pgm|ppm)` functions read a file header and
-automatically detects the file format. Since `read()` function cannot know which
-format will be passed, it returns `imgae<rgb_pixel>` to enable to contain any of them.
+automatically detects the file format. `read()` function receives `pixel_type`
+that you want to get(By default, it is `rgb_pixel`). But please note that when
+you pass a `pixel_type` that is different from actual one contained in the file,
+`read()` converts the `pixel_type` if it is not `narrowing-conversion` (for
+example, conversion from `bit_pixel` to `rgb_pixel` is allowed. On the other
+hand, the opposite conversion is not allowed).
 
 `write` function writes the image file into a specific file. You can select a
 format to write out by passing an enum value `pnm::format::ascii` or
@@ -250,9 +254,9 @@ format to write out by passing an enum value `pnm::format::ascii` or
 ```cpp
 enum class format: bool {ascii, binary};
 
-template<typename Alloc = std::allocator<rgb_pixel>>
-image<rgb_pixel, Alloc> read(const std::string& fname);
-template<typename Alloc>
+template<typename Pixel = rgb_pixel, typename Alloc = std::allocator<Pixel>>
+image<Pixel, Alloc> read(const std::string& fname);
+template<typename Pixel, typename Alloc>
 void write(const std::string& fname, const image<Pixel, Alloc>& img, const format fmt);
 
 template<typename Alloc = std::allocator<bit_pixel>>
