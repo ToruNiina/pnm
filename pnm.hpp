@@ -151,8 +151,11 @@ namespace detail
 template<typename From, typename To>
 struct convert_impl
 {
-    static_assert(!is_narrowing_conversion<From, To>::value,
-        "pnm::convert_to: narrowing conversion is not provided by default.");
+    static inline To invoke(From)
+    {
+        throw std::runtime_error("pnm::convert_to(pixel): "
+                "narrowing conversion is not allowed by default.");
+    }
 };
 
 template<>
