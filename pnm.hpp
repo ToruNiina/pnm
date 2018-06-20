@@ -315,7 +315,7 @@ struct line_proxy
     const_reference operator[](const std::size_t i) const noexcept
     {return (*container_)[offset_ + i];}
 
-    reference at(const std::size_t i) noexcept
+    reference at(const std::size_t i)
     {
         if(nx_ <= i)
         {
@@ -325,7 +325,7 @@ struct line_proxy
         }
         return container_->at(offset_ + i);
     }
-    const_reference at(const std::size_t i) const noexcept
+    const_reference at(const std::size_t i) const
     {
         if(nx_ <= i)
         {
