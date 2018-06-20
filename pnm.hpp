@@ -1154,16 +1154,10 @@ image<bit_pixel, Alloc> read_pbm_binary(const std::string& fname)
         }
         std::uint8_t v(0);
         ifs.read(reinterpret_cast<char*>(&v), 1);
-        switch(rem)
+        for(std::size_t r=0; r<rem; ++r)
         {
-            case 7: img(quot*8+7,j)=bit_pixel((v&0x02)==0x02); //[[fallthrough]]
-            case 6: img(quot*8+6,j)=bit_pixel((v&0x04)==0x04); //[[fallthrough]]
-            case 5: img(quot*8+5,j)=bit_pixel((v&0x08)==0x08); //[[fallthrough]]
-            case 4: img(quot*8+4,j)=bit_pixel((v&0x10)==0x10); //[[fallthrough]]
-            case 3: img(quot*8+3,j)=bit_pixel((v&0x20)==0x20); //[[fallthrough]]
-            case 2: img(quot*8+2,j)=bit_pixel((v&0x40)==0x40); //[[fallthrough]]
-            case 1: img(quot*8+1,j)=bit_pixel((v&0x80)==0x80); //[[fallthrough]]
-            default: break;
+            const std::size_t mask = (1 << (7-r));
+            img(quot*8 + r, j) = bit_pixel((v & mask) == mask);
         }
     }
     return img;
