@@ -19,7 +19,7 @@ copy `pnm.hpp` to your favorite location. then use it.
 int main()
 {
     using namespace pnm::literals;
-    pnm::image<pnm::rgb_pixel> ppm = pnm::read_ppm("sample.ppm");
+    pnm::image<pnm::rgb_pixel> ppm = pnm::read("sample.ppm");
 
     std::cout << "width  = " << ppm.width()  << std::endl;
     std::cout << "height = " << ppm.height() << std::endl;
@@ -31,7 +31,7 @@ int main()
             ppm[y][x] = 0xFF00FF_rgb;
         }
     }
-    pnm::write_ppm("out.ppm", ppm, pnm::format::binary);
+    pnm::write("out.ppm", ppm, pnm::format::binary);
 
     return 0;
 }
@@ -109,6 +109,12 @@ gray_pixel operator"" _gray(unsigned long long x);
 rgb_pixel  operator"" _rgb (unsigned long long x);
 }
 }
+
+template<typename T> struct is_pixel;
+template<typename From, typename To> struct is_narrowing_conversion;
+
+template<typename ToPixel, typename FromPixel>
+ToPixel convert_to(FromPixel&& pixel);
 ```
 
 ### image
@@ -185,6 +191,12 @@ class image
     image& operator=(image&&)      = default;
 
     image(const std::size_t width, const std::size_t height);
+    image(const std::size_t width, const std::size_t height, const pixel_type& pix);
+
+    template<typename T>
+    image(const std::size_t width, const std::size_t height, const std::vector<T>& values)
+    template<typename T>
+    image(const std::vector<std::vector<T>>& values)
 
     line_proxy       operator[](const std::size_t i)       noexcept;
     const_line_proxy operator[](const std::size_t i) const noexcept;
