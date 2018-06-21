@@ -1777,7 +1777,6 @@ void write_pgm_binary(const std::string& fname,
             ofs.write(reinterpret_cast<const char*>(
                         std::addressof(img(i, j).value)), 1);
         }
-        ofs << '\n';
     }
     return ;
 }
