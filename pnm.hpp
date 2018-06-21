@@ -921,6 +921,10 @@ class image
     container_type pixels_;
 };
 
+using pbm_image = image< bit_pixel>;
+using pgm_image = image<gray_pixel>;
+using ppm_image = image< rgb_pixel>;
+
 // --------------------------------------------------------------------------
 //    __                        _    * io functions and operators
 //   / _| ___  _ __ _ _ _  __ _| |_  * enum class format

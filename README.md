@@ -245,6 +245,10 @@ class image
     line_range       lines()       noexcept;
     const_line_range lines() const noexcept;
 };
+
+using pbm_image = image< bit_pixel>;
+using pgm_image = image<gray_pixel>;
+using ppm_image = image< rgb_pixel>;
 ```
 
 ### io
