@@ -1,0 +1,6 @@
+build/*
+sample/unicolor
+.DS_store
+*.pbm
+*.pgm
+*.ppm
