@@ -37,6 +37,18 @@ int main()
 }
 ```
 
+## build samples and test codes
+
+To use this library, you don't need to build anything.
+The following commands will build the sample scripts.
+
+```sh
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make
+```
+
 ## reference
 
 ### pixels
