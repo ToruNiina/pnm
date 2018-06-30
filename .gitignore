@@ -1,5 +1,6 @@
 build/*
 sample/unicolor
+sample/mandelbrot
 .DS_store
 *.pbm
 *.pgm
