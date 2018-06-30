@@ -1124,18 +1124,44 @@ image<bit_pixel, Alloc> read_pbm_binary(const std::string& fname)
         }
     }
 
-    std::size_t x(0), y(0);
+    bool        x_read(false), y_read(false);
+    std::size_t x(0),          y(0);
+    while(!ifs.eof())
     {
         std::string line;
         std::getline(ifs, line);
+        line.erase(std::find(line.begin(), line.end(), '#'), line.end());
+        if(line.empty()){continue;}
+
+        std::size_t tmp;
         std::istringstream iss(line);
-        iss >> x >> y;
-        if(iss.fail())
+        while(!iss.eof())
         {
-            throw std::runtime_error("pnm::read_pbm_binary: "
-                "couldn't read file size: " + line + " from "_str + fname);
+            iss >> tmp;
+            if(iss.fail())
+            {
+                std::string dummy;
+                iss >> dummy;
+                if(!std::all_of(dummy.begin(), dummy.end(), [](const char c){
+                        return std::isspace(static_cast<int>(c));
+                    }))
+                {
+                    throw std::runtime_error("pnm::read_pbm_ascii: file " +
+                        fname + " contains invalid token: "_str + dummy);
+                }
+            }
+            else
+            {
+                if(!x_read){x = tmp; x_read = true; continue;}
+                if(!y_read){y = tmp; y_read = true; continue;}
+            }
+        }
+        if(x_read && y_read)
+        {
+            break;
         }
     }
+
     image<bit_pixel, Alloc> img(x, y);
 
     const std::size_t quot = x >> 3u;
@@ -1316,27 +1342,42 @@ image<gray_pixel, Alloc> read_pgm_binary(const std::string& fname)
         }
     }
 
-    std::size_t x(0), y(0), max(0);
+    bool        x_read(false), y_read(false), max_read(false);
+    std::size_t x(0),          y(0),          max(0);
+    while(!ifs.eof())
     {
         std::string line;
         std::getline(ifs, line);
+        line.erase(std::find(line.begin(), line.end(), '#'), line.end());
+        if(line.empty()){continue;}
+
+        std::size_t tmp;
         std::istringstream iss(line);
-        iss >> x >> y;
-        if(iss.fail())
+        while(!iss.eof())
         {
-            throw std::runtime_error("pnm::read_pgm_binary: "
-                "couldn't read file size: " + line + " from "_str + fname);
+            iss >> tmp;
+            if(iss.fail())
+            {
+                std::string dummy;
+                iss >> dummy;
+                if(!std::all_of(dummy.begin(), dummy.end(), [](const char c){
+                        return std::isspace(static_cast<int>(c));
+                    }))
+                {
+                    throw std::runtime_error("pnm::read_pgm_ascii: file " +
+                        fname + " contains invalid token: "_str  + dummy);
+                }
+            }
+            else
+            {
+                if(  !x_read){  x = tmp;   x_read = true; continue;}
+                if(  !y_read){  y = tmp;   y_read = true; continue;}
+                if(!max_read){max = tmp; max_read = true; continue;}
+            }
         }
-    }
-    {
-        std::string line;
-        std::getline(ifs, line);
-        std::istringstream iss(line);
-        iss >> max;
-        if(iss.fail())
+        if(x_read && y_read && max_read)
         {
-            throw std::runtime_error("pnm::read_pgm_binary: "
-                "couldn't read max value: " + line + " from "_str + fname);
+            break;
         }
     }
 
@@ -1511,27 +1552,42 @@ image<rgb_pixel, Alloc> read_ppm_binary(const std::string& fname)
         }
     }
 
-    std::size_t x(0), y(0), max(0);
+    bool        x_read(false), y_read(false), max_read(false);
+    std::size_t x(0),          y(0),          max(0);
+    while(!ifs.eof())
     {
         std::string line;
         std::getline(ifs, line);
+        line.erase(std::find(line.begin(), line.end(), '#'), line.end());
+        if(line.empty()){continue;}
+
+        std::size_t tmp;
         std::istringstream iss(line);
-        iss >> x >> y;
-        if(iss.fail())
+        while(!iss.eof())
         {
-            throw std::runtime_error("pnm::read_ppm_binary: "
-                "couldn't read file size: " + line + " from "_str + fname);
+            iss >> tmp;
+            if(iss.fail())
+            {
+                std::string dummy;
+                iss >> dummy;
+                if(!std::all_of(dummy.begin(), dummy.end(), [](const char c){
+                        return std::isspace(static_cast<int>(c));
+                    }))
+                {
+                    throw std::runtime_error("pnm::read_ppm_ascii: file " +
+                        fname + " contains invalid token: "_str + dummy);
+                }
+            }
+            else
+            {
+                if(  !x_read){  x = tmp;   x_read = true; continue;}
+                if(  !y_read){  y = tmp;   y_read = true; continue;}
+                if(!max_read){max = tmp; max_read = true; continue;}
+            }
         }
-    }
-    {
-        std::string line;
-        std::getline(ifs, line);
-        std::istringstream iss(line);
-        iss >> max;
-        if(iss.fail())
+        if(x_read && y_read && max_read)
         {
-            throw std::runtime_error("pnm::read_ppm_binary: "
-                "couldn't read max value: " + line + " form "_str + fname);
+            break;
         }
     }
 
