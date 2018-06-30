@@ -1755,9 +1755,9 @@ void write_pbm_binary(const std::string& fname,
 
     for(std::size_t j=0; j<img.y_size(); ++j)
     {
-        std::uint8_t buf(0u);
         for(std::size_t i=0; i<img.x_size(); i+=8)
         {
+            std::uint8_t buf(0u);
             if(get_or(i+0, j, img)){buf |= 0x80;}
             if(get_or(i+1, j, img)){buf |= 0x40;}
             if(get_or(i+2, j, img)){buf |= 0x20;}
