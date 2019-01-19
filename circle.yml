@@ -14,6 +14,7 @@ jobs:
           name: install dependencies
           command: |
               npm install gitbook-cli
+              echo "gitbook-cli installed"
               git config --global user.name  $USERNAME
               git config --global user.email $EMAIL
               echo "git configured"
