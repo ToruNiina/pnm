@@ -1,0 +1,33 @@
+version: 2
+general:
+  branches:
+    only:
+      - master
+
+machine:
+  node:
+    version: 6.2.2
+
+test:
+  override:
+    - exit 0
+
+dependencies:
+  override:
+    - npm install gitbook-cli
+
+deployment:
+  production:
+    branch: master
+    commands:
+      - git config --global user.name  $USERNAME
+      - git config --global user.email $EMAIL
+      - gitbook install
+      - gitbook build
+      - cd _book/
+      - git init
+      - git commit --allow-empty -m '[ci skip] update docs'
+      - git checkout -b gh-pages
+      - git add .
+      - git commit -am '[ci skip] update docs'
+      - git push --force git@github.com:ToruNiina/pnm.git gh-pages
