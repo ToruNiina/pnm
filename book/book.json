@@ -1,0 +1,12 @@
+{
+    "plugins": ["hints",
+                "github",
+                "anchors",
+                "fontsettings",
+                "search",
+                "back-to-top-button"
+    ],
+    "pluginsConfig": {
+        "github":{"url":"https://github.com/ToruNiina/pnm"}
+    }
+}
