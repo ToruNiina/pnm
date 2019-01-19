@@ -9,6 +9,9 @@ jobs:
     executor:
       name: default
     steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "dc:7f:0f:16:6b:47:d7:79:d5:1e:0b:b8:0c:0d:33:74"
       - checkout
       - run:
           name: install dependencies
@@ -35,3 +38,4 @@ workflows:
           filters:
             branches:
               only: master
+
