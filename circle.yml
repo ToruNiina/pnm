@@ -15,8 +15,8 @@ jobs:
           command: |
               npm install gitbook-cli
               echo "gitbook-cli installed"
-              git config --global user.name  $USERNAME
-              git config --global user.email $EMAIL
+              git config --global user.name  "ToruNiina"
+              git config --global user.email "niina.toru.68u@gmail.com"
               echo "git configured"
               gitbook install
               echo "gitbook plugins are installed"
