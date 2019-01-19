@@ -1,6 +1,10 @@
 build/*
+_book/*
+node_modules/*
+
 sample/unicolor
 sample/mandelbrot
+
 .DS_store
 *.pbm
 *.pgm
