@@ -16,8 +16,11 @@ jobs:
               npm install gitbook-cli
               git config --global user.name  $USERNAME
               git config --global user.email $EMAIL
+              echo "git configured"
               gitbook install
+              echo "gitbook plugins are installed"
               gitbook build
+              echo "html built"
               cd _book/
               git init
               git commit --allow-empty -m '[ci skip] update docs'
