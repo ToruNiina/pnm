@@ -1,0 +1,486 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Reference · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-hints/plugin-hints.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-anchors/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-back-to-top-button/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    
+    <link rel="prev" href="Usage.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="Usage.html">
+            
+                <a href="Usage.html">
+            
+                    
+                    Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.3" data-path="Reference.html">
+            
+                <a href="Reference.html">
+            
+                    
+                    Reference
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="." >Reference</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="reference"><a name="reference" class="plugin-anchor" href="#reference"><i class="fa fa-link" aria-hidden="true"></i></a>Reference</h1>
+<h2 id="pixels"><a name="pixels" class="plugin-anchor" href="#pixels"><i class="fa fa-link" aria-hidden="true"></i></a>pixels</h2>
+<pre><code class="lang-cpp"><span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> T, <span class="hljs-built_in">std</span>::<span class="hljs-keyword">size_t</span> N&gt;
+<span class="hljs-keyword">struct</span> basic_pixel;
+
+<span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> T&gt;
+<span class="hljs-keyword">struct</span> basic_pixel&lt;T, <span class="hljs-number">1</span>&gt;
+{
+  <span class="hljs-keyword">public</span>:
+    <span class="hljs-keyword">using</span> value_type = T;
+    <span class="hljs-keyword">static</span> <span class="hljs-keyword">constexpr</span> <span class="hljs-built_in">std</span>::<span class="hljs-keyword">size_t</span> colors = <span class="hljs-number">1</span>;
+
+    basic_pixel()  = <span class="hljs-keyword">default</span>;
+    ~basic_pixel() = <span class="hljs-keyword">default</span>;
+    basic_pixel(<span class="hljs-keyword">const</span> basic_pixel&amp;) = <span class="hljs-keyword">default</span>;
+    basic_pixel(basic_pixel&amp;&amp;)      = <span class="hljs-keyword">default</span>;
+    basic_pixel&amp; <span class="hljs-keyword">operator</span>=(<span class="hljs-keyword">const</span> basic_pixel&amp;) = <span class="hljs-keyword">default</span>;
+    basic_pixel&amp; <span class="hljs-keyword">operator</span>=(basic_pixel&amp;&amp;)      = <span class="hljs-keyword">default</span>;
+
+<span class="hljs-comment">// noexcept if T is nothrow constructible</span>
+    basic_pixel(<span class="hljs-keyword">const</span> value_type&amp; v);
+    basic_pixel(value_type&amp;&amp; v);
+
+    value_type value;
+};
+
+<span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> T&gt;
+<span class="hljs-keyword">struct</span> basic_pixel&lt;T, <span class="hljs-number">3</span>&gt;
+{
+  <span class="hljs-keyword">public</span>:
+    <span class="hljs-keyword">using</span> value_type = T;
+    <span class="hljs-keyword">static</span> <span class="hljs-keyword">constexpr</span> <span class="hljs-built_in">std</span>::<span class="hljs-keyword">size_t</span> colors = <span class="hljs-number">3</span>;
+
+    basic_pixel()  = <span class="hljs-keyword">default</span>;
+    ~basic_pixel() = <span class="hljs-keyword">default</span>;
+    basic_pixel(<span class="hljs-keyword">const</span> basic_pixel&amp;) = <span class="hljs-keyword">default</span>;
+    basic_pixel(basic_pixel&amp;&amp;)      = <span class="hljs-keyword">default</span>;
+    basic_pixel&amp; <span class="hljs-keyword">operator</span>=(<span class="hljs-keyword">const</span> basic_pixel&amp;) = <span class="hljs-keyword">default</span>;
+    basic_pixel&amp; <span class="hljs-keyword">operator</span>=(basic_pixel&amp;&amp;)      = <span class="hljs-keyword">default</span>;
+
+<span class="hljs-comment">// noexcept if T is nothrow constructible</span>
+    basic_pixel(<span class="hljs-keyword">const</span> value_type&amp; R, <span class="hljs-keyword">const</span> value_type&amp; G, <span class="hljs-keyword">const</span> value_type&amp; B);
+    basic_pixel(value_type&amp;&amp;      R, value_type&amp;&amp;      G, value_type&amp;&amp;      B);
+    basic_pixel(<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">array</span>&lt;value_type, 3&gt;&amp; values);
+
+    value_type red;
+    value_type green;
+    value_type blue;
+};
+
+<span class="hljs-keyword">using</span>  bit_pixel = basic_pixel&lt;<span class="hljs-keyword">bool</span>,         <span class="hljs-number">1</span>&gt;;
+<span class="hljs-keyword">using</span> gray_pixel = basic_pixel&lt;<span class="hljs-built_in">std</span>::<span class="hljs-keyword">uint8_t</span>, <span class="hljs-number">1</span>&gt;;
+<span class="hljs-keyword">using</span>  rgb_pixel = basic_pixel&lt;<span class="hljs-built_in">std</span>::<span class="hljs-keyword">uint8_t</span>, <span class="hljs-number">3</span>&gt;;
+
+<span class="hljs-keyword">namespace</span> literals
+{
+<span class="hljs-keyword">inline</span> <span class="hljs-keyword">namespace</span> pixel_literals
+{
+bit_pixel  <span class="hljs-keyword">operator</span><span class="hljs-string">&quot;&quot;</span> _bit (<span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">long</span> <span class="hljs-keyword">long</span> x);
+gray_pixel <span class="hljs-keyword">operator</span><span class="hljs-string">&quot;&quot;</span> _gray(<span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">long</span> <span class="hljs-keyword">long</span> x);
+rgb_pixel  <span class="hljs-keyword">operator</span><span class="hljs-string">&quot;&quot;</span> _rgb (<span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">long</span> <span class="hljs-keyword">long</span> x);
+}
+}
+
+<span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> T&gt; <span class="hljs-keyword">struct</span> is_pixel;
+<span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> From, <span class="hljs-keyword">typename</span> To&gt; <span class="hljs-keyword">struct</span> is_narrowing_conversion;
+
+<span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> ToPixel, <span class="hljs-keyword">typename</span> FromPixel&gt;
+<span class="hljs-function">ToPixel <span class="hljs-title">convert_to</span><span class="hljs-params">(FromPixel&amp;&amp; pixel)</span></span>;
+</code></pre>
+<h2 id="images"><a name="images" class="plugin-anchor" href="#images"><i class="fa fa-link" aria-hidden="true"></i></a>images</h2>
+<pre><code class="lang-cpp"><span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> Pixel, <span class="hljs-keyword">typename</span> Alloc = <span class="hljs-built_in">std</span>::allocator&lt;Pixel&gt;&gt;
+<span class="hljs-keyword">class</span> image
+{
+  <span class="hljs-keyword">public</span>:
+    <span class="hljs-keyword">using</span> pixel_type                = Pixel;
+    <span class="hljs-keyword">using</span> allocator_type            = Alloc;
+    <span class="hljs-keyword">using</span> container_type            = <span class="hljs-built_in">std</span>::<span class="hljs-built_in">vector</span>&lt;pixel_type, allocator_type&gt;;
+    <span class="hljs-keyword">using</span> size_type                 = <span class="hljs-keyword">typename</span> container_type::size_type;
+    <span class="hljs-keyword">using</span> difference_type           = <span class="hljs-keyword">typename</span> container_type::difference_type;
+    <span class="hljs-keyword">using</span> value_type                = <span class="hljs-keyword">typename</span> container_type::value_type;
+    <span class="hljs-keyword">using</span> pointer                   = <span class="hljs-keyword">typename</span> container_type::pointer;
+    <span class="hljs-keyword">using</span> const_pointer             = <span class="hljs-keyword">typename</span> container_type::const_pointer;
+    <span class="hljs-keyword">using</span> reference                 = <span class="hljs-keyword">typename</span> container_type::reference;
+    <span class="hljs-keyword">using</span> const_reference           = <span class="hljs-keyword">typename</span> container_type::const_reference;
+    <span class="hljs-keyword">using</span> iterator                  = <span class="hljs-keyword">typename</span> container_type::iterator;
+    <span class="hljs-keyword">using</span> const_iterator            = <span class="hljs-keyword">typename</span> container_type::const_iterator;
+    <span class="hljs-keyword">using</span> reverse_iterator          = <span class="hljs-keyword">typename</span> container_type::reverse_iterator;
+    <span class="hljs-keyword">using</span> const_reverse_iterator    = <span class="hljs-keyword">typename</span> container_type::const_reverse_iterator;
+    <span class="hljs-keyword">using</span> line_proxy                = <span class="hljs-comment">/* internal proxy class */</span>
+    <span class="hljs-keyword">using</span> const_line_proxy          = <span class="hljs-comment">/* internal proxy class */</span>
+    <span class="hljs-keyword">using</span> line_proxy_iterator       = <span class="hljs-comment">/* internal proxy class */</span>
+    <span class="hljs-keyword">using</span> const_line_proxy_iterator = <span class="hljs-comment">/* internal proxy class */</span>
+    <span class="hljs-keyword">using</span> line_range                = <span class="hljs-comment">/* internal proxy class */</span>
+    <span class="hljs-keyword">using</span> const_line_range          = <span class="hljs-comment">/* internal proxy class */</span>
+
+    image()  = <span class="hljs-keyword">default</span>;
+    ~image() = <span class="hljs-keyword">default</span>;
+    image(<span class="hljs-keyword">const</span> image&amp;) = <span class="hljs-keyword">default</span>;
+    image(image&amp;&amp;)      = <span class="hljs-keyword">default</span>;
+    image&amp; <span class="hljs-keyword">operator</span>=(<span class="hljs-keyword">const</span> image&amp;) = <span class="hljs-keyword">default</span>;
+    image&amp; <span class="hljs-keyword">operator</span>=(image&amp;&amp;)      = <span class="hljs-keyword">default</span>;
+
+    image(<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-keyword">size_t</span> width, <span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-keyword">size_t</span> height);
+    image(<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-keyword">size_t</span> width, <span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-keyword">size_t</span> height, <span class="hljs-keyword">const</span> pixel_type&amp; pix);
+
+    <span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> T&gt;
+    image(<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-keyword">size_t</span> width, <span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-keyword">size_t</span> height, <span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">vector</span>&lt;T&gt;&amp; values)
+    <span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> T&gt;
+    image(<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">vector</span>&lt;<span class="hljs-built_in">std</span>::<span class="hljs-built_in">vector</span>&lt;T&gt;&gt;&amp; values)
+
+    line_proxy       <span class="hljs-keyword">operator</span>[](<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-keyword">size_t</span> i)       <span class="hljs-keyword">noexcept</span>;
+    const_line_proxy <span class="hljs-keyword">operator</span>[](<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-keyword">size_t</span> i) <span class="hljs-keyword">const</span> <span class="hljs-keyword">noexcept</span>;
+
+    <span class="hljs-function">line_proxy       <span class="hljs-title">at</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::size_t i)</span></span>;
+    <span class="hljs-function">const_line_proxy <span class="hljs-title">at</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::size_t i)</span> <span class="hljs-keyword">const</span></span>;
+
+    <span class="hljs-function">reference       <span class="hljs-title">operator</span><span class="hljs-params">()</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::size_t ix, <span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::size_t iy)</span>       <span class="hljs-keyword">noexcept</span></span>;
+    <span class="hljs-function">const_reference <span class="hljs-title">operator</span><span class="hljs-params">()</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::size_t ix, <span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::size_t iy)</span> <span class="hljs-keyword">const</span> <span class="hljs-keyword">noexcept</span></span>;
+
+    <span class="hljs-function">reference       <span class="hljs-title">at</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::size_t ix, <span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::size_t iy)</span></span>;
+    <span class="hljs-function">const_reference <span class="hljs-title">at</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::size_t ix, <span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::size_t iy)</span> <span class="hljs-keyword">const</span></span>;
+
+    <span class="hljs-function">reference       <span class="hljs-title">raw_access</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::size_t i)</span>       <span class="hljs-keyword">noexcept</span></span>;
+    <span class="hljs-function">const_reference <span class="hljs-title">raw_access</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::size_t i)</span> <span class="hljs-keyword">const</span> <span class="hljs-keyword">noexcept</span></span>;
+    <span class="hljs-function">reference       <span class="hljs-title">raw_at</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::size_t i)</span></span>;
+    <span class="hljs-function">const_reference <span class="hljs-title">raw_at</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::size_t i)</span> <span class="hljs-keyword">const</span></span>;
+
+    <span class="hljs-built_in">std</span>::<span class="hljs-keyword">size_t</span> width()  <span class="hljs-keyword">const</span> <span class="hljs-keyword">noexcept</span>;
+    <span class="hljs-built_in">std</span>::<span class="hljs-keyword">size_t</span> height() <span class="hljs-keyword">const</span> <span class="hljs-keyword">noexcept</span>;
+    <span class="hljs-built_in">std</span>::<span class="hljs-keyword">size_t</span> x_size() <span class="hljs-keyword">const</span> <span class="hljs-keyword">noexcept</span>;
+    <span class="hljs-built_in">std</span>::<span class="hljs-keyword">size_t</span> y_size() <span class="hljs-keyword">const</span> <span class="hljs-keyword">noexcept</span>;
+    <span class="hljs-built_in">std</span>::<span class="hljs-keyword">size_t</span> size()   <span class="hljs-keyword">const</span> <span class="hljs-keyword">noexcept</span>;
+
+    <span class="hljs-function">iterator       <span class="hljs-title">begin</span><span class="hljs-params">()</span>        <span class="hljs-keyword">noexcept</span></span>;
+    <span class="hljs-function">iterator       <span class="hljs-title">end</span><span class="hljs-params">()</span>          <span class="hljs-keyword">noexcept</span></span>;
+    <span class="hljs-function">const_iterator <span class="hljs-title">begin</span><span class="hljs-params">()</span>  <span class="hljs-keyword">const</span> <span class="hljs-keyword">noexcept</span></span>;
+    <span class="hljs-function">const_iterator <span class="hljs-title">end</span><span class="hljs-params">()</span>    <span class="hljs-keyword">const</span> <span class="hljs-keyword">noexcept</span></span>;
+    <span class="hljs-function">const_iterator <span class="hljs-title">cbegin</span><span class="hljs-params">()</span> <span class="hljs-keyword">const</span> <span class="hljs-keyword">noexcept</span></span>;
+    <span class="hljs-function">const_iterator <span class="hljs-title">cend</span><span class="hljs-params">()</span>   <span class="hljs-keyword">const</span> <span class="hljs-keyword">noexcept</span></span>;
+
+    <span class="hljs-function">reverse_iterator       <span class="hljs-title">rbegin</span><span class="hljs-params">()</span>        <span class="hljs-keyword">noexcept</span></span>;
+    <span class="hljs-function">reverse_iterator       <span class="hljs-title">rend</span><span class="hljs-params">()</span>          <span class="hljs-keyword">noexcept</span></span>;
+    <span class="hljs-function">const_reverse_iterator <span class="hljs-title">rbegin</span><span class="hljs-params">()</span>  <span class="hljs-keyword">const</span> <span class="hljs-keyword">noexcept</span></span>;
+    <span class="hljs-function">const_reverse_iterator <span class="hljs-title">rend</span><span class="hljs-params">()</span>    <span class="hljs-keyword">const</span> <span class="hljs-keyword">noexcept</span></span>;
+    <span class="hljs-function">const_reverse_iterator <span class="hljs-title">crbegin</span><span class="hljs-params">()</span> <span class="hljs-keyword">const</span> <span class="hljs-keyword">noexcept</span></span>;
+    <span class="hljs-function">const_reverse_iterator <span class="hljs-title">crend</span><span class="hljs-params">()</span>   <span class="hljs-keyword">const</span> <span class="hljs-keyword">noexcept</span></span>;
+
+    <span class="hljs-function">line_proxy_iterator       <span class="hljs-title">line_begin</span><span class="hljs-params">()</span>        <span class="hljs-keyword">noexcept</span></span>;
+    <span class="hljs-function">line_proxy_iterator       <span class="hljs-title">line_end</span><span class="hljs-params">()</span>          <span class="hljs-keyword">noexcept</span></span>;
+    <span class="hljs-function">const_line_proxy_iterator <span class="hljs-title">line_begin</span><span class="hljs-params">()</span>  <span class="hljs-keyword">const</span> <span class="hljs-keyword">noexcept</span></span>;
+    <span class="hljs-function">const_line_proxy_iterator <span class="hljs-title">line_end</span><span class="hljs-params">()</span>    <span class="hljs-keyword">const</span> <span class="hljs-keyword">noexcept</span></span>;
+    <span class="hljs-function">const_line_proxy_iterator <span class="hljs-title">line_cbegin</span><span class="hljs-params">()</span> <span class="hljs-keyword">const</span> <span class="hljs-keyword">noexcept</span></span>;
+    <span class="hljs-function">const_line_proxy_iterator <span class="hljs-title">line_cend</span><span class="hljs-params">()</span>   <span class="hljs-keyword">const</span> <span class="hljs-keyword">noexcept</span></span>;
+
+    <span class="hljs-function">line_range       <span class="hljs-title">lines</span><span class="hljs-params">()</span>       <span class="hljs-keyword">noexcept</span></span>;
+    <span class="hljs-function">const_line_range <span class="hljs-title">lines</span><span class="hljs-params">()</span> <span class="hljs-keyword">const</span> <span class="hljs-keyword">noexcept</span></span>;
+};
+
+<span class="hljs-keyword">using</span> pbm_image = image&lt; bit_pixel&gt;;
+<span class="hljs-keyword">using</span> pgm_image = image&lt;gray_pixel&gt;;
+<span class="hljs-keyword">using</span> ppm_image = image&lt; rgb_pixel&gt;;
+</code></pre>
+<h2 id="io"><a name="io" class="plugin-anchor" href="#io"><i class="fa fa-link" aria-hidden="true"></i></a>IO</h2>
+<pre><code class="lang-cpp"><span class="hljs-keyword">enum</span> <span class="hljs-keyword">class</span> format: <span class="hljs-keyword">bool</span> {ascii, binary};
+
+<span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> Pixel = rgb_pixel, <span class="hljs-keyword">typename</span> Alloc = <span class="hljs-built_in">std</span>::allocator&lt;Pixel&gt;&gt;
+image&lt;Pixel, Alloc&gt; read(<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>&amp; fname);
+<span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> Pixel, <span class="hljs-keyword">typename</span> Alloc&gt;
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">write</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>&amp; fname, <span class="hljs-keyword">const</span> image&lt;Pixel, Alloc&gt;&amp; img, <span class="hljs-keyword">const</span> format fmt)</span></span>;
+
+<span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> Alloc = <span class="hljs-built_in">std</span>::allocator&lt;bit_pixel&gt;&gt;
+image&lt;bit_pixel, Alloc&gt;  read_pbm(<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>&amp; fname);
+<span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> Alloc = <span class="hljs-built_in">std</span>::allocator&lt;gray_pixel&gt;&gt;
+image&lt;gray_pixel, Alloc&gt; read_pgm(<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>&amp; fname);
+<span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> Alloc = <span class="hljs-built_in">std</span>::allocator&lt;rgb_pixel&gt;&gt;
+image&lt;rgb_pixel, Alloc&gt;  read_ppm(<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>&amp; fname);
+
+
+<span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> Alloc = <span class="hljs-built_in">std</span>::allocator&lt;bit_pixel&gt;&gt;
+image&lt;bit_pixel, Alloc&gt; read_pbm_ascii(<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>&amp; fname);
+<span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> Alloc = <span class="hljs-built_in">std</span>::allocator&lt;bit_pixel&gt;&gt;
+image&lt;bit_pixel, Alloc&gt; read_pbm_binary(<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>&amp; fname);
+
+<span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> Alloc = <span class="hljs-built_in">std</span>::allocator&lt;gray_pixel&gt;&gt;
+image&lt;gray_pixel, Alloc&gt; read_pgm_ascii(<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>&amp; fname);
+<span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> Alloc = <span class="hljs-built_in">std</span>::allocator&lt;gray_pixel&gt;&gt;
+image&lt;gray_pixel, Alloc&gt; read_pgm_binary(<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>&amp; fname);
+
+<span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> Alloc = <span class="hljs-built_in">std</span>::allocator&lt;rgb_pixel&gt;&gt;
+image&lt;rgb_pixel, Alloc&gt; read_ppm_ascii(<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>&amp; fname);
+<span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> Alloc = <span class="hljs-built_in">std</span>::allocator&lt;rgb_pixel&gt;&gt;
+image&lt;rgb_pixel, Alloc&gt; read_ppm_binary(<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>&amp; fname);
+
+
+<span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> Alloc&gt;
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">write_pbm</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>&amp; fname, <span class="hljs-keyword">const</span> image&lt;bit_pixel, Alloc&gt;&amp; img, <span class="hljs-keyword">const</span> format fmt)</span></span>;
+<span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> Alloc&gt;
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">write_pgm</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>&amp; fname, <span class="hljs-keyword">const</span> image&lt;gray_pixel, Alloc&gt;&amp; img, <span class="hljs-keyword">const</span> format fmt)</span></span>;
+<span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> Alloc&gt;
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">write_ppm</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>&amp; fname, <span class="hljs-keyword">const</span> image&lt;rgb_pixel, Alloc&gt;&amp; img, <span class="hljs-keyword">const</span> format fmt)</span></span>;
+
+<span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> Alloc&gt;
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">write_pbm_ascii</span> <span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>&amp; fname, <span class="hljs-keyword">const</span> image&lt;bit_pixel, Alloc&gt;&amp; img)</span></span>;
+<span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> Alloc&gt;
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">write_pbm_binary</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>&amp; fname, <span class="hljs-keyword">const</span> image&lt;bit_pixel, Alloc&gt;&amp; img)</span></span>;
+
+<span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> Alloc&gt;
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">write_pgm_ascii</span> <span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>&amp; fname, <span class="hljs-keyword">const</span> image&lt;gray_pixel, Alloc&gt;&amp; img)</span></span>;
+<span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> Alloc&gt;
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">write_pgm_binary</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>&amp; fname, <span class="hljs-keyword">const</span> image&lt;gray_pixel, Alloc&gt;&amp; img)</span></span>;
+
+<span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> Alloc&gt;
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">write_ppm_ascii</span> <span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>&amp; fname, <span class="hljs-keyword">const</span> image&lt;rgb_pixel, Alloc&gt;&amp; img)</span></span>;
+<span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> Alloc&gt;
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">write_ppm_binary</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>&amp; fname, <span class="hljs-keyword">const</span> image&lt;rgb_pixel, Alloc&gt;&amp; img)</span></span>;
+</code></pre>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="Usage.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page: Usage">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Reference","level":"1.3","depth":1,"previous":{"title":"Usage","level":"1.2","depth":1,"path":"Usage.md","ref":"Usage.md","articles":[]},"dir":"ltr"},"config":{"plugins":["hints","github","anchors","fontsettings","search","back-to-top-button"],"root":"book","styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"github":{"url":"https://github.com/ToruNiina/pnm"},"search":{},"hints":{"danger":"fa fa-exclamation-circle","info":"fa fa-info-circle","tip":"fa fa-mortar-board","working":"fa fa-wrench"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"family":"sans","size":2,"theme":"white"},"highlight":{},"back-to-top-button":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"gitbook":"*"},"file":{"path":"Reference.md","mtime":"2019-01-31T06:19:13.394Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-01-31T06:19:51.915Z"},"basePath":".","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="gitbook/gitbook.js"></script>
+    <script src="gitbook/theme.js"></script>
+    
+        
+        <script src="gitbook/gitbook-plugin-github/plugin.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-back-to-top-button/plugin.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+
+    </body>
+</html>
+
