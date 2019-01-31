@@ -1,5 +1,9 @@
 # pnm++
 
+[![Build Status](https://travis-ci.com/ToruNiina/pnm.svg?branch=master)](https://travis-ci.com/ToruNiina/pnm)
+[![version](https://img.shields.io/github/release/ToruNiina/pnm.svg?style=flat)](https://github.com/ToruNiina/pnm/releases)
+[![license](https://img.shields.io/github/license/ToruNiina/pnm.svg?style=flat)](https://github.com/ToruNiina/pnm/blob/master/LICENSE)
+
 header-only, standalone pnm image reader/writer for modern C++ (after C++11).
 
 It has no dependencies except for C++ Standard Library.
