@@ -2006,5 +2006,21 @@ inline void write(const std::string& fname, const image<rgb_pixel, Alloc>& img,
     return write_ppm(fname, img, fmt);
 }
 
+// --------------------------------------------------------------------------
+// License notice for binary distribution.
+//
+// The licensing notice as a comment would be removed by compilers, but this
+// function will be kept (unless link time optimization wipes out functions
+// that are never called). This function enables you to use this library
+// without being afraid of violating licensing terms.
+// --------------------------------------------------------------------------
+inline std::string licensing_terms()
+{
+    return std::string(
+        "pnm++: This product is licensed under the terms of the MIT License.\n"
+        "         - Copyright (c) 2018 Toru Niina\n"
+        "       All rights reserved.");
+}
+
 } // pnm
 #endif // PNM_PLUS_PLUS_H
