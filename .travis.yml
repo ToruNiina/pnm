@@ -36,36 +36,25 @@ matrix:
   - os: linux
     language: cpp
     compiler: clang
+    env: COMPILER="clang++-8"
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        - llvm-toolchain-xenial-8
+        packages:
+        - clang-8
+  - os: linux
+    language: cpp
+    compiler: clang
     env: COMPILER="clang++-7"
     addons:
       apt:
         sources:
         - ubuntu-toolchain-r-test
-        - llvm-toolchain-trusty-7
+        - llvm-toolchain-xenial-7
         packages:
         - clang-7
-  - os: linux
-    language: cpp
-    compiler: clang
-    env: COMPILER="clang++-6.0"
-    addons:
-      apt:
-        sources:
-        - ubuntu-toolchain-r-test
-        - llvm-toolchain-trusty-6.0
-        packages:
-        - clang-6.0
-  - os: linux
-    language: cpp
-    compiler: clang
-    env: COMPILER="clang++-5.0"
-    addons:
-      apt:
-        sources:
-        - ubuntu-toolchain-r-test
-        - llvm-toolchain-trusty-5.0
-        packages:
-        - clang-5.0
   - os: osx
     language: cpp
     compiler: clang
