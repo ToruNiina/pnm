@@ -4,7 +4,5 @@ project(pnm++)
 
 include_directories(${PROJECT_SOURCE_DIR})
 
-set(CMAKE_CXX_STANDARD 11)
-add_definitions(-pedantic -Wall -Wextra)
-
 add_subdirectory(sample)
+add_subdirectory(test)

@@ -2,6 +2,8 @@ build/*
 _book/*
 node_modules/*
 
+extlib/*
+
 sample/unicolor
 sample/mandelbrot
 
