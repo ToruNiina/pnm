@@ -90,6 +90,37 @@ template<typename T>
 constexpr std::size_t basic_pixel<T, 1>::colors;
 
 template<typename T>
+inline bool operator==(const basic_pixel<T, 1>& lhs, const basic_pixel<T, 1>& rhs) noexcept
+{
+    return lhs.value == rhs.value;
+}
+template<typename T>
+inline bool operator!=(const basic_pixel<T, 1>& lhs, const basic_pixel<T, 1>& rhs) noexcept
+{
+    return lhs.value != rhs.value;
+}
+template<typename T>
+inline bool operator<(const basic_pixel<T, 1>& lhs, const basic_pixel<T, 1>& rhs) noexcept
+{
+    return lhs.value < rhs.value;
+}
+template<typename T>
+inline bool operator>(const basic_pixel<T, 1>& lhs, const basic_pixel<T, 1>& rhs) noexcept
+{
+    return lhs.value > rhs.value;
+}
+template<typename T>
+inline bool operator<=(const basic_pixel<T, 1>& lhs, const basic_pixel<T, 1>& rhs) noexcept
+{
+    return lhs.value <= rhs.value;
+}
+template<typename T>
+inline bool operator>=(const basic_pixel<T, 1>& lhs, const basic_pixel<T, 1>& rhs) noexcept
+{
+    return lhs.value >= rhs.value;
+}
+
+template<typename T>
 struct basic_pixel<T, 3>
 {
   public:
@@ -122,6 +153,38 @@ struct basic_pixel<T, 3>
 };
 template<typename T>
 constexpr std::size_t basic_pixel<T, 3>::colors;
+
+template<typename T>
+inline bool operator==(const basic_pixel<T, 3>& lhs, const basic_pixel<T, 3>& rhs) noexcept
+{
+    return lhs.red == rhs.red && lhs.green == rhs.green && lhs.blue == rhs.blue;
+}
+template<typename T>
+inline bool operator!=(const basic_pixel<T, 3>& lhs, const basic_pixel<T, 3>& rhs) noexcept
+{
+    return !(lhs == rhs);
+}
+template<typename T>
+inline bool operator<(const basic_pixel<T, 3>& lhs, const basic_pixel<T, 3>& rhs) noexcept
+{
+    return std::array<T, 3>{{lhs.red, lhs.green, lhs.blue}} <
+           std::array<T, 3>{{rhs.red, rhs.green, rhs.blue}};
+}
+template<typename T>
+inline bool operator<=(const basic_pixel<T, 3>& lhs, const basic_pixel<T, 3>& rhs) noexcept
+{
+    return (lhs < rhs) || (lhs == rhs);
+}
+template<typename T>
+inline bool operator>(const basic_pixel<T, 3>& lhs, const basic_pixel<T, 3>& rhs) noexcept
+{
+    return !(lhs <= rhs);
+}
+template<typename T>
+inline bool operator>=(const basic_pixel<T, 3>& lhs, const basic_pixel<T, 3>& rhs) noexcept
+{
+    return !(lhs < rhs);
+}
 
 using    bit_pixel = basic_pixel<bool,          1>;
 using   gray_pixel = basic_pixel<std::uint8_t,  1>;
