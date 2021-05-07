@@ -30,6 +30,7 @@
 #error "pnm++ requires C++11 or later."
 #endif
 
+#include <cctype>
 #include <type_traits>
 #include <utility>
 #include <stdexcept>
