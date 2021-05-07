@@ -1246,6 +1246,7 @@ image<bit_pixel, Alloc> read_pbm_binary(const std::string& fname)
             img(i*8 + 6, j) = bit_pixel((v & 0x02) == 0x02);
             img(i*8 + 7, j) = bit_pixel((v & 0x01) == 0x01);
         }
+        if (rem == 0) { continue; }
         std::uint8_t v(0);
         ifs.read(reinterpret_cast<char*>(&v), 1);
         for(std::size_t r=0; r<rem; ++r)
