@@ -1171,7 +1171,7 @@ template<typename Alloc = std::allocator<bit_pixel>>
 image<bit_pixel, Alloc> read_pbm_binary(const std::string& fname)
 {
     using detail::literals::operator"" _str;
-    std::ifstream ifs(fname);
+    std::ifstream ifs(fname, std::ios::binary);
     if(!ifs.good())
     {
         throw std::runtime_error(
@@ -1390,7 +1390,7 @@ template<typename Alloc = std::allocator<gray_pixel>>
 image<gray_pixel, Alloc> read_pgm_binary(const std::string& fname)
 {
     using detail::literals::operator"" _str;
-    std::ifstream ifs(fname);
+    std::ifstream ifs(fname, std::ios::binary);
     if(!ifs.good())
     {
         throw std::runtime_error(
@@ -1600,7 +1600,7 @@ template<typename Alloc = std::allocator<rgb_pixel>>
 image<rgb_pixel, Alloc> read_ppm_binary(const std::string& fname)
 {
     using detail::literals::operator"" _str;
-    std::ifstream ifs(fname);
+    std::ifstream ifs(fname, std::ios::binary);
     if(!ifs.good())
     {
         throw std::runtime_error(
@@ -1803,7 +1803,7 @@ template<typename Alloc>
 void write_pbm_binary(const std::string& fname,
                       const image<bit_pixel, Alloc>& img)
 {
-    std::ofstream ofs(fname);
+    std::ofstream ofs(fname, std::ios::binary);
     if(!ofs.good())
     {
         throw std::runtime_error(
@@ -1882,7 +1882,7 @@ template<typename Alloc>
 void write_pgm_binary(const std::string& fname,
                       const image<gray_pixel, Alloc>& img)
 {
-    std::ofstream ofs(fname);
+    std::ofstream ofs(fname, std::ios::binary);
     if(!ofs.good())
     {
         throw std::runtime_error(
@@ -1951,7 +1951,7 @@ template<typename Alloc>
 void write_ppm_binary(const std::string& fname,
                       const image<rgb_pixel, Alloc>& img)
 {
-    std::ofstream ofs(fname);
+    std::ofstream ofs(fname, std::ios::binary);
     if(!ofs.good())
     {
         throw std::runtime_error(
