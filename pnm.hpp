@@ -1179,12 +1179,13 @@ image<bit_pixel, Alloc> read_pbm_binary(const std::string& fname)
     }
 
     {
-        std::string desc;
-        std::getline(ifs, desc);
-        if(desc != "P4")
+        char desc[2] = {'\0', '\0'};
+        ifs.read(desc, 2);
+        if(!(desc[0] == 'P' && desc[1] == '4'))
         {
             throw std::runtime_error("pnm::read_pbm_binary: " + fname +
-                " is not a binary pbm file: magic number is "_str + desc);
+                " is not a binary pbm file: magic number is "_str +
+                std::string{desc[0], desc[1]});
         }
     }
 
@@ -1398,12 +1399,13 @@ image<gray_pixel, Alloc> read_pgm_binary(const std::string& fname)
     }
 
     {
-        std::string desc;
-        std::getline(ifs, desc);
-        if(desc != "P5")
+        char desc[2] = {'\0', '\0'};
+        ifs.read(desc, 2);
+        if(!(desc[0] == 'P' && desc[1] == '5'))
         {
             throw std::runtime_error("pnm::read_pgm_binary: " + fname +
-                " is not a binary pgm file: magic number is "_str + desc);
+                " is not a binary pgm file: magic number is "_str +
+                std::string{desc[0], desc[1]});
         }
     }
 
@@ -1608,12 +1610,13 @@ image<rgb_pixel, Alloc> read_ppm_binary(const std::string& fname)
     }
 
     {
-        std::string desc;
-        std::getline(ifs, desc);
-        if(desc != "P6")
+        char desc[2] = {'\0', '\0'};
+        ifs.read(desc, 2);
+        if(!(desc[0] == 'P' && desc[1] == '6'))
         {
             throw std::runtime_error("pnm::read_ppm_binary: " + fname +
-                " is not a binary ppm file: magic number is "_str + desc);
+                " is not a binary ppm file: magic number is "_str +
+                std::string{desc[0], desc[1]});
         }
     }
 
