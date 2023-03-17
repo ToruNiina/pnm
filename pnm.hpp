@@ -1066,7 +1066,7 @@ inline std::string operator"" _str(const char* s, std::size_t len)
 template<typename Alloc = std::allocator<bit_pixel>>
 image<bit_pixel, Alloc> read_pbm_ascii(const std::string& fname)
 {
-    using detail::literals::operator"" _str;
+    using namespace detail::literals;
 
     std::ifstream ifs(fname);
     if(!ifs.good())
@@ -1170,7 +1170,7 @@ image<bit_pixel, Alloc> read_pbm_ascii(const std::string& fname)
 template<typename Alloc = std::allocator<bit_pixel>>
 image<bit_pixel, Alloc> read_pbm_binary(const std::string& fname)
 {
-    using detail::literals::operator"" _str;
+    using namespace detail::literals;
     std::ifstream ifs(fname, std::ios::binary);
     if(!ifs.good())
     {
@@ -1262,7 +1262,7 @@ image<bit_pixel, Alloc> read_pbm_binary(const std::string& fname)
 template<typename Alloc = std::allocator<bit_pixel>>
 image<bit_pixel, Alloc> read_pbm(const std::string& fname)
 {
-    using detail::literals::operator"" _str;
+    using namespace detail::literals;
     char descripter[2];
     {
         std::ifstream ifs(fname, std::ios::binary);
@@ -1284,7 +1284,7 @@ image<bit_pixel, Alloc> read_pbm(const std::string& fname)
 template<typename Alloc = std::allocator<gray_pixel>>
 image<gray_pixel, Alloc> read_pgm_ascii(const std::string& fname)
 {
-    using detail::literals::operator"" _str;
+    using namespace detail::literals;
     std::ifstream ifs(fname);
     if(!ifs.good())
     {
@@ -1390,7 +1390,7 @@ image<gray_pixel, Alloc> read_pgm_ascii(const std::string& fname)
 template<typename Alloc = std::allocator<gray_pixel>>
 image<gray_pixel, Alloc> read_pgm_binary(const std::string& fname)
 {
-    using detail::literals::operator"" _str;
+    using namespace detail::literals;
     std::ifstream ifs(fname, std::ios::binary);
     if(!ifs.good())
     {
@@ -1463,7 +1463,7 @@ image<gray_pixel, Alloc> read_pgm_binary(const std::string& fname)
 template<typename Alloc = std::allocator<gray_pixel>>
 image<gray_pixel, Alloc> read_pgm(const std::string& fname)
 {
-    using detail::literals::operator"" _str;
+    using namespace detail::literals;
     char descripter[2];
     {
         std::ifstream ifs(fname, std::ios::binary);
@@ -1486,7 +1486,7 @@ image<gray_pixel, Alloc> read_pgm(const std::string& fname)
 template<typename Alloc = std::allocator<rgb_pixel>>
 image<rgb_pixel, Alloc> read_ppm_ascii(const std::string& fname)
 {
-    using detail::literals::operator"" _str;
+    using namespace detail::literals;
     std::ifstream ifs(fname);
     if(!ifs.good())
     {
@@ -1601,7 +1601,7 @@ image<rgb_pixel, Alloc> read_ppm_ascii(const std::string& fname)
 template<typename Alloc = std::allocator<rgb_pixel>>
 image<rgb_pixel, Alloc> read_ppm_binary(const std::string& fname)
 {
-    using detail::literals::operator"" _str;
+    using namespace detail::literals;
     std::ifstream ifs(fname, std::ios::binary);
     if(!ifs.good())
     {
@@ -1677,7 +1677,7 @@ image<rgb_pixel, Alloc> read_ppm_binary(const std::string& fname)
 template<typename Alloc = std::allocator<rgb_pixel>>
 image<rgb_pixel, Alloc> read_ppm(const std::string& fname)
 {
-    using detail::literals::operator"" _str;
+    using namespace detail::literals;
     char descripter[2];
     {
         std::ifstream ifs(fname, std::ios::binary);
@@ -1738,7 +1738,7 @@ image<Pixel, Alloc> convert_image(image<FromPixel, FromAlloc>&& img)
 template<typename Pixel = rgb_pixel, typename Alloc = std::allocator<Pixel>>
 image<Pixel, Alloc> read(const std::string& fname)
 {
-    using detail::literals::operator"" _str;
+    using namespace detail::literals;
     char descripter[2];
     {
         std::ifstream ifs(fname, std::ios::binary);
