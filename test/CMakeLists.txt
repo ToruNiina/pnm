@@ -19,4 +19,5 @@ foreach(TEST_NAME ${TEST_NAMES})
                           COMPILE_FLAGS "-std=c++11 -O2 -Wall -Wpedantic -Wextra")
     add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME}
              WORKING_DIRECTORY "${PROJECT_BINARY_DIR}/test")
+    target_link_libraries(${TEST_NAME} PRIVATE pnm++)
 endforeach(TEST_NAME)
