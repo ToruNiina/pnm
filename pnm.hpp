@@ -420,22 +420,22 @@ struct line_proxy
     bool operator<(const line_proxy& rhs) const noexcept
     {
         return this->nx_ == rhs.nx_ && this->container_ == rhs.container_ &&
-               this->iy_ <  rhs.ny_;
+               this->iy_ <  rhs.iy_;
     }
     bool operator>(const line_proxy& rhs) const noexcept
     {
         return this->nx_ == rhs.nx_ && this->container_ == rhs.container_ &&
-               this->iy_ >  rhs.ny_;
+               this->iy_ >  rhs.iy_;
     }
     bool operator<=(const line_proxy& rhs) const noexcept
     {
         return this->nx_ == rhs.nx_ && this->container_ == rhs.container_ &&
-               this->iy_ <= rhs.ny_;
+               this->iy_ <= rhs.iy_;
     }
     bool operator>=(const line_proxy& rhs) const noexcept
     {
         return this->nx_ == rhs.nx_ && this->container_ == rhs.container_ &&
-               this->iy_ >= rhs.ny_;
+               this->iy_ >= rhs.iy_;
     }
 
   private:
@@ -509,22 +509,22 @@ struct const_line_proxy
     bool operator<(const const_line_proxy& rhs) const noexcept
     {
         return this->nx_ == rhs.nx_ && this->container_ == rhs.container_ &&
-               this->iy_ <  rhs.ny_;
+               this->iy_ <  rhs.iy_;
     }
     bool operator>(const const_line_proxy& rhs) const noexcept
     {
         return this->nx_ == rhs.nx_ && this->container_ == rhs.container_ &&
-               this->iy_ >  rhs.ny_;
+               this->iy_ >  rhs.iy_;
     }
     bool operator<=(const const_line_proxy& rhs) const noexcept
     {
         return this->nx_ == rhs.nx_ && this->container_ == rhs.container_ &&
-               this->iy_ <= rhs.ny_;
+               this->iy_ <= rhs.iy_;
     }
     bool operator>=(const const_line_proxy& rhs) const noexcept
     {
         return this->nx_ == rhs.nx_ && this->container_ == rhs.container_ &&
-               this->iy_ >= rhs.ny_;
+               this->iy_ >= rhs.iy_;
     }
 
   private:
