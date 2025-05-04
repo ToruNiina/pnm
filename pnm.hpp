@@ -1132,37 +1132,27 @@ image<bit_pixel, Alloc> read_pbm_ascii(const std::string& fname)
         std::string line;
         std::getline(ifs, line);
         line.erase(std::find(line.begin(), line.end(), '#'), line.end());
+        line.erase(std::remove_if(line.begin(), line.end(),
+                               [](unsigned char x) { return std::isspace(x); }),
+                               line.end());
         if(line.empty()){continue;}
 
         int pix;
-        std::istringstream iss(line);
-        while(!iss.eof())
+        char pix_read;
+        while(!line.empty())
         {
-            iss >> pix;
-            if(iss.fail())
+            pix_read = line.front();
+            line.erase(0,1);
+            pix = (pix_read == '0')? 0 : 1;
+            if(idx >= x * y)
             {
-                std::string dummy;
-                iss >> dummy;
-                if(!std::all_of(dummy.begin(), dummy.end(), [](const char c){
-                        return std::isspace(static_cast<int>(c));
-                    }))
-                {
-                    throw std::runtime_error("pnm::read_pbm_ascii: "
-                        "file contains invalid token: " + dummy);
-                }
+                throw std::runtime_error("pnm::read_pbm_ascii: file "  +
+                    fname + " contains too many pixels: "_str +
+                    std::to_string(idx) + " pixels for "_str  +
+                    std::to_string(x)   + "x"_str             +
+                    std::to_string(y)   + " image"_str);
             }
-            else
-            {
-                if(idx >= x * y)
-                {
-                    throw std::runtime_error("pnm::read_pbm_ascii: file "  +
-                        fname + " contains too many pixels: "_str +
-                        std::to_string(idx) + " pixels for "_str  +
-                        std::to_string(x)   + "x"_str             +
-                        std::to_string(y)   + " image"_str);
-                }
-                img.raw_access(idx++) = bit_pixel(pix != 0);
-            }
+            img.raw_access(idx++) = bit_pixel(pix != 0);
         }
     }
     return img;
